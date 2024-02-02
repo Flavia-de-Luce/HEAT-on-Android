@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Heat</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Tabelle</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="loginForm">TEST TEXT</string>
+    <string name="firstRowText">Ratta</string>
+    <string name="tHeadName">Name</string>
+    <string name="tHeadLatestPlacement">Letzte Platzierung</string>
+    <string name="tHeadTotalScore">Gesamt Punkte</string>
+</resources>
