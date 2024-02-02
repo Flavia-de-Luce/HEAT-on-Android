@@ -24,6 +24,7 @@ import de.melchers.heat.databinding.ActivityMainBinding;
 public class MainActivity extends AppCompatActivity {
     private final String LAST_OPENED_URI_KEY = "de.melchers.heat.actionopendocument.pref.LAST_OPENED_URI_KEY";
     private final String TAG = "MainActivity";
+
     private final String OPEN_DOCUMENT_REQUEST_CODE = "0x33"; // Könnte alles mögliche sein, wird nur zum zuordnen der Daten gebraucht.
     ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
             new ActivityResultCallback<Uri>() {
