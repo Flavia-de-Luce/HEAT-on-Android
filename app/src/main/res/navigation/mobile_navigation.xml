@@ -22,4 +22,9 @@
         android:name="de.melchers.heat.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/navigation_add_player"
+        android:name="de.melchers.heat.ui.addPlayer.AddPlayer"
+        android:label="fragment_add_player"
+        tools:layout="@layout/fragment_add_player" />
 </navigation>
