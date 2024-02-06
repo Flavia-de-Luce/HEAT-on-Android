@@ -43,16 +43,20 @@ public class DashboardFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        assert getArguments() != null;
+        String[] playerNames = getArguments().getStringArray("PlayerNames");
         try {
             //createDynamicTable(view, 2, 3);
-            createTableFromTemplate(view, 3);
+            assert playerNames != null;
+            createTableFromTemplate(view, playerNames);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void createTableFromTemplate(View view, int cols) throws JSONException {
+    private void createTableFromTemplate(View view, String[] playerNames) throws JSONException {
+        int cols = 3;
         TableLayout tl = requireView().findViewById(R.id.table1);
         // Initialise Data Objects
         JSONArray dataSet = new JSONArray();
@@ -80,10 +84,11 @@ public class DashboardFragment extends Fragment {
         TextView[] tr_body = new TextView[cols];
         TableRow[] tr_head = new TableRow[dataSet.length()];
         // For loop to create Table rows
-        for (int i = 0; i < dataSet.length(); i++) {
+        for (int i = 0; i < playerNames.length; i++) {
             // Retrieve Data
             JSONObject playerList = dataSet.getJSONObject(i);
-            String playerName = playerList.getString("Name");
+            //String playerName = playerList.getString("Name");
+            String playerName = playerNames[i];
             int playerPlacement = playerList.getInt(("LatestPlacement"));
             int playerScore = playerList.getInt("TotalScore");
 
