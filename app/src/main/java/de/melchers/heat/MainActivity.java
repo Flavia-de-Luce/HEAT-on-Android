@@ -45,11 +45,14 @@ public class MainActivity extends AppCompatActivity {
             });
     private ActivityMainBinding binding;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        // TODO: Implement ViewModel.
+        // Hoffnung: MainActivity hält das ViewModel vor und alle Fragments können sich die Daten holen die sie benötigen.
+        //           Und MainActivity kann die selben Daten bei änderungen direkt in die .xls speichern :D
 
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
+               R.id.navigation_add_player, R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);

@@ -44,14 +44,15 @@ public class DashboardFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        assert getArguments() != null;
-        String[] playerNames = getArguments().getStringArray("PlayerNames");
-        try {
-            //createDynamicTable(view, 2, 3);
-            assert playerNames != null;
-            createTableFromTemplate(view, playerNames);
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+        if (getArguments() != null) {
+            String[] playerNames = getArguments().getStringArray("PlayerNames");
+            try {
+                //createDynamicTable(view, 2, 3);
+                assert playerNames != null;
+                createTableFromTemplate(view, playerNames);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

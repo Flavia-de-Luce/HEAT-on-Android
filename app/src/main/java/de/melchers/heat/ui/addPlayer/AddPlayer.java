@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 
 import android.view.Gravity;
@@ -21,6 +22,7 @@ import java.sql.Time;
 
 import de.melchers.heat.MainActivity;
 import de.melchers.heat.R;
+import de.melchers.heat.ui.dashboard.DashboardFragment;
 import jxl.write.DateTime;
 
 public class AddPlayer extends Fragment {
@@ -71,7 +73,16 @@ public class AddPlayer extends Fragment {
         }
         bundle.putStringArray("PlayerNames", playerNames);
 
+        // Funzt, aber ersetzt das Fragment anstatt zu springen...
         Navigation.findNavController(view).navigate(R.id.navigation_dashboard, bundle);
+        //Fragment dashboard = new DashboardFragment();
+//        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+//        Fragment dashboard = getParentFragmentManager().findFragmentById(R.id.navigation_dashboard);
+////        transaction.add(dashboard, "Dashboard");
+//        transaction.replace(R.id., dashboard);
+//        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+//        transaction.addToBackStack(null);
+//        transaction.commit();
     }
 
     private void createTableRow(View view) {
