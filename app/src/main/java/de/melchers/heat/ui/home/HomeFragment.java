@@ -18,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import de.melchers.heat.MainActivity;
 import de.melchers.heat.R;
@@ -64,14 +65,15 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.createNewSeasonBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).createFile(view);
+                Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_navigation_add_player);
+//                ((MainActivity)requireActivity()).createFile(view);
             }
         });
 
         view.findViewById(R.id.openRunningSeasonBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).openFile(view);
+                ((MainActivity)requireActivity()).openFile(view);
             }
         });
     }

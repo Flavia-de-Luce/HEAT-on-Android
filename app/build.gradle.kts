@@ -42,8 +42,12 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
-    implementation("androidx.navigation:navigation-fragment:2.7.6")
-    implementation("androidx.navigation:navigation-ui:2.7.6")
+    //Navigation
+    implementation("androidx.navigation:navigation-fragment:2.7.7")
+    implementation("androidx.navigation:navigation-ui:2.7.7")
+    implementation("androidx.navigation:navigation-dynamic-features-fragment:2.7.7")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
     implementation("net.sourceforge.jexcelapi:jxl:2.6.12")
     implementation("androidx.preference:preference:1.2.1")
     implementation("androidx.annotation:annotation:1.7.1")

@@ -21,14 +21,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 
 import de.melchers.heat.classes.ExcelExporter;
+import de.melchers.heat.classes.HeatViewModel;
 import de.melchers.heat.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,12 +51,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
     private ActivityMainBinding binding;
+    public HeatViewModel mViewModel;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // TODO: Implement ViewModel.
         // Hoffnung: MainActivity hält das ViewModel vor und alle Fragments können sich die Daten holen die sie benötigen.
         //           Und MainActivity kann die selben Daten bei änderungen direkt in die .xls speichern :D
@@ -57,21 +64,36 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        mViewModel = new ViewModelProvider(this).get(HeatViewModel.class);
+//        ViewModelProvider.AndroidViewModelFactory viewModelProvider = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
 
+
+//        mViewModel = viewModelProvider.create(HeatViewModel.class);
+//        try {
+//            mViewModel.playerArray.put(new JSONObject().put("Name", "Peter"));
+//        } catch (JSONException e) {
+//            throw new RuntimeException(e);
+//        }
+
+        //this.findViewById(R.id.navigation_dashboard);
+
+        NavController navController = NavHostFragment.findNavController(binding.navHostFragment.getFragment());
+        navController.setGraph(R.navigation.mobile_navigation);
+//        navController.navigate(R.id.addPlayer);
 //        ActivityCompat.requestPermissions(this, new String[]{
 //                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
 //                android.Manifest.permission.READ_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
 
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
+//        BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-               R.id.navigation_add_player, R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+//               R.id.navigation_add_player, R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
+//                .build();
+//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+//        NavigationUI.setupWithNavController(binding.navView, navController);
 
         askForPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE, 11);
         askForPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, 12);
@@ -82,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void createFile(View view) { //Uri pickerInitialUri
         ExcelExporter.export();
-        //        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);//, MediaStore.Downloads.EXTERNAL_CONTENT_URI);
+//        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);//, MediaStore.Downloads.EXTERNAL_CONTENT_URI);
 //        //intent.addCategory(Intent.CATEGORY_OPENABLE);
 //        //intent.setType("application/msexcel");
 //        intent.setDataAndType(MediaStore.Downloads.EXTERNAL_CONTENT_URI, "application/msexcel");

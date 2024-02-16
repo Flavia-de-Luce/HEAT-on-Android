@@ -2,10 +2,11 @@ package de.melchers.heat.ui.addPlayer;
 
 import android.os.Bundle;
 
-import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import android.view.Gravity;
@@ -16,17 +17,19 @@ import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.sql.Array;
-import java.sql.Time;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.*;
 
-import de.melchers.heat.MainActivity;
 import de.melchers.heat.R;
+import de.melchers.heat.classes.HeatViewModel;
 import de.melchers.heat.ui.dashboard.DashboardFragment;
-import jxl.write.DateTime;
 
 public class AddPlayer extends Fragment {
     private int playerCount = 1;
+    private HeatViewModel viewModel;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +45,7 @@ public class AddPlayer extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
+        viewModel = new ViewModelProvider(requireActivity()).get(HeatViewModel.class);
 
         view.findViewById(R.id.addPlayer).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,29 +64,19 @@ public class AddPlayer extends Fragment {
 
     private void submitPlayers(View view) {
         String[] playerNames = new String[this.playerCount];
+
         Bundle bundle = new Bundle();
         int viewId = 10000;
 
-        EditText temp = (EditText) getView().findViewById(R.id.inpName);
+        EditText temp = requireView().findViewById(R.id.inpName);
         playerNames[0] = temp.getText().toString();
         for (int i = 1; i < this.playerCount; i++) {
-            EditText temp2 = (EditText) getView().findViewById(viewId + i);
+            EditText temp2 = requireView().findViewById(viewId + i);
             playerNames[i] = temp2.getText().toString();
-
-
         }
         bundle.putStringArray("PlayerNames", playerNames);
-
-        // Funzt, aber ersetzt das Fragment anstatt zu springen...
+        this.viewModel.playerNames = playerNames;
         Navigation.findNavController(view).navigate(R.id.navigation_dashboard, bundle);
-        //Fragment dashboard = new DashboardFragment();
-//        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-//        Fragment dashboard = getParentFragmentManager().findFragmentById(R.id.navigation_dashboard);
-////        transaction.add(dashboard, "Dashboard");
-//        transaction.replace(R.id., dashboard);
-//        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//        transaction.addToBackStack(null);
-//        transaction.commit();
     }
 
     private void createTableRow(View view) {
@@ -96,10 +90,10 @@ public class AddPlayer extends Fragment {
             tr_head.setId(this.playerCount);
             tr_head.setGravity(Gravity.START);
 
-            temp[0] = LayoutInflater.from(getActivity()).inflate(R.layout.add_player_label, null);
+            temp[0] = LayoutInflater.from(getActivity()).inflate(R.layout.template_add_player_label, null);
             tr_body[0] = ((TextView) temp[0]);
             tr_body[0].setId(this.playerCount + 5000);
-            temp[1] = LayoutInflater.from(getActivity()).inflate(R.layout.add_player_input, null);
+            temp[1] = LayoutInflater.from(getActivity()).inflate(R.layout.template_add_player_input, null);
             tr_body[1] = ((EditText) temp[1]);
             tr_body[1].setId(this.playerCount + 10000);
 
@@ -109,6 +103,8 @@ public class AddPlayer extends Fragment {
                     TableRow.LayoutParams.MATCH_PARENT,
                     TableRow.LayoutParams.WRAP_CONTENT));
             this.playerCount++;
+        } else {
+            Toast.makeText(requireContext(), "Mehr als 6 Spieler werden nicht unterstützt :/", Toast.LENGTH_SHORT).show();
         }
     }
 }
