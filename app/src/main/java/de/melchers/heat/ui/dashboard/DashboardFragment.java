@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +25,7 @@ import java.util.Arrays;
 import de.melchers.heat.MainActivity;
 import de.melchers.heat.R;
 import de.melchers.heat.classes.HeatViewModel;
+import de.melchers.heat.classes.Player;
 import de.melchers.heat.databinding.FragmentDashboardBinding;
 
 public class DashboardFragment extends Fragment {
@@ -32,7 +34,7 @@ public class DashboardFragment extends Fragment {
     private HeatViewModel viewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
+        //DashboardViewModel dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -44,17 +46,26 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(requireActivity()).get(HeatViewModel.class);
-            JSONArray playerArray = new JSONArray();
-            try {
-                for (String element : viewModel.playerNames) {
-                    playerArray.put(new JSONObject().accumulate("Name", element));
-                }
-                createTableFromTemplate(playerArray);
-            } catch (JSONException e) {
-                e.printStackTrace();
+        JSONArray playerArray = new JSONArray();
+        try {
+            for (Player player : viewModel.players) {
+                JSONObject temp = new JSONObject();
+                temp.accumulate("Name", player.getName());
+                temp.accumulate("LatestPlacement", player.getLastPlacement());
+                temp.accumulate("TotalScore", player.getTotalScore());
+                playerArray.put(temp);
             }
+            createTableFromTemplate(playerArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        view.findViewById(R.id.enterMatchBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(view).navigate(R.id.navigation_notifications);
 
-
+            }
+        });
 
     }
 
@@ -76,7 +87,7 @@ public class DashboardFragment extends Fragment {
         TextView[] tr_body = new TextView[cols];
         TableRow[] tr_head = new TableRow[playerArray.length()];
         // For loop to create Table rows
-        for (int i = 0; i <= playerArray.length(); i++) {
+        for (int i = 0; i < playerArray.length(); i++) {
             JSONObject playerList = playerArray.getJSONObject(i);
             String playerName = playerList.getString("Name");
             int playerPlacement = 0;

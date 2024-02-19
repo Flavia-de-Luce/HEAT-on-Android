@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -36,6 +37,7 @@ import java.io.File;
 
 import de.melchers.heat.classes.ExcelExporter;
 import de.melchers.heat.classes.HeatViewModel;
+import de.melchers.heat.classes.Player;
 import de.melchers.heat.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
             });
     private ActivityMainBinding binding;
     public HeatViewModel mViewModel;
+    private ExcelExporter excelExporter;
 
 
     @Override
@@ -64,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        mViewModel = new ViewModelProvider(this).get(HeatViewModel.class);
+        this.mViewModel = new ViewModelProvider(this).get(HeatViewModel.class);
+        this.excelExporter = new ExcelExporter(this);
 //        ViewModelProvider.AndroidViewModelFactory viewModelProvider = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
 
 
@@ -101,6 +105,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static final int PICK_PDF_FILE = 2;
+
+    public Player[] calculateResults(Player[] players){
+        for (Player player:players) {
+            switch(player.getLastPlacement()){
+                case 1:
+                    player.setTotalScore(player.getTotalScore() + 9);
+                    break;
+                case 2:
+                    player.setTotalScore(player.getTotalScore() + 6);
+                    break;
+                case 3:
+                    player.setTotalScore(player.getTotalScore() + 4);
+                    break;
+                case 4:
+                    player.setTotalScore(player.getTotalScore() + 3);
+                    break;
+                case 5:
+                    player.setTotalScore(player.getTotalScore() + 2);
+                    break;
+                case 6:
+                    player.setTotalScore(player.getTotalScore() + 1);
+                    break;
+                default:
+                    Toast.makeText(this, "KEINE PLATZIERUNG von" + player.getName(), Toast.LENGTH_LONG).show();
+                    break;
+            }
+        }
+        saveGame(players.length);
+        return players;
+    }
+
+    public void saveGame(int playerCount){
+        this.excelExporter.saveGameState(playerCount);
+    }
 
     public void createFile(View view) { //Uri pickerInitialUri
         ExcelExporter.export();

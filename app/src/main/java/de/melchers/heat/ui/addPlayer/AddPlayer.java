@@ -23,8 +23,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.*;
 
+import de.melchers.heat.MainActivity;
 import de.melchers.heat.R;
 import de.melchers.heat.classes.HeatViewModel;
+import de.melchers.heat.classes.Player;
 import de.melchers.heat.ui.dashboard.DashboardFragment;
 
 public class AddPlayer extends Fragment {
@@ -63,20 +65,22 @@ public class AddPlayer extends Fragment {
     }
 
     private void submitPlayers(View view) {
-        String[] playerNames = new String[this.playerCount];
-
-        Bundle bundle = new Bundle();
+//        String[] playerNames = new String[this.playerCount];
+        Player[] players = new Player[this.playerCount];
         int viewId = 10000;
 
         EditText temp = requireView().findViewById(R.id.inpName);
-        playerNames[0] = temp.getText().toString();
+//        playerNames[0] = temp.getText().toString();
+        players[0] = new Player(temp.getText().toString());
         for (int i = 1; i < this.playerCount; i++) {
             EditText temp2 = requireView().findViewById(viewId + i);
-            playerNames[i] = temp2.getText().toString();
+//            playerNames[i] = temp2.getText().toString();
+            players[i] = new Player(temp2.getText().toString());
         }
-        bundle.putStringArray("PlayerNames", playerNames);
-        this.viewModel.playerNames = playerNames;
-        Navigation.findNavController(view).navigate(R.id.navigation_dashboard, bundle);
+//        this.viewModel.playerNames = playerNames;
+        this.viewModel.players = players;
+        ((MainActivity)requireActivity()).saveGame(this.playerCount);
+        Navigation.findNavController(view).navigate(R.id.navigation_dashboard);
     }
 
     private void createTableRow(View view) {

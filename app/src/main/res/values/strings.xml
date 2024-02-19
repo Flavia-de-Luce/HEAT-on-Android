@@ -19,4 +19,10 @@
     <string name="button_add_player_submit">Weiter</string>
     <string name="label_add_player">Name: </string>
 
+    <!--    Dashboard Fragment-->
+    <string name="enter_Match_Btn">Runde Eintragen</string>
+
+    <!--    Notification Fragment-->
+    <string name="submit_round_results_btn">Speichern</string>
+
 </resources>
