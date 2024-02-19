@@ -36,8 +36,20 @@
         android:layout_height="wrap_content"
         android:text="@string/submit_round_results_btn"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cancel_round_results_btn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Notification_Layout" />
+        app:layout_constraintTop_toBottomOf="@+id/Notification_Layout"
+        app:layout_constraintVertical_bias="0.16000003" />
+
+    <Button
+        android:id="@+id/cancel_round_results_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel_round_results_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/submit_round_results_btn"
+        app:layout_constraintTop_toBottomOf="@+id/Notification_Layout"
+        app:layout_constraintVertical_bias="0.16000003" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,9 +20,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
-
-import de.melchers.heat.MainActivity;
 import de.melchers.heat.R;
 import de.melchers.heat.classes.HeatViewModel;
 import de.melchers.heat.classes.Player;
@@ -59,11 +56,16 @@ public class DashboardFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        view.findViewById(R.id.enterMatchBtn).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.enter_match_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(view).navigate(R.id.navigation_notifications);
-
+                Navigation.findNavController(v).navigate(R.id.navigation_notifications);
+            }
+        });
+        view.findViewById(R.id.cancel_match_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.navigation_home);
             }
         });
 

@@ -21,8 +21,10 @@
 
     <!--    Dashboard Fragment-->
     <string name="enter_Match_Btn">Runde Eintragen</string>
+    <string name="cancel_match_btn">Menü</string>
 
     <!--    Notification Fragment-->
     <string name="submit_round_results_btn">Speichern</string>
+    <string name="cancel_round_results_btn">Abbrechen</string>
 
 </resources>

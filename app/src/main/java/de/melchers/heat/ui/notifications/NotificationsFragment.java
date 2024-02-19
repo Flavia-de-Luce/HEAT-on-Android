@@ -47,6 +47,13 @@ public class NotificationsFragment extends Fragment {
                 submitGameResults(v);
             }
         });
+
+        view.findViewById(R.id.cancel_round_results_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.navigation_dashboard);
+            }
+        });
     }
 
     private void submitGameResults(View view) {
