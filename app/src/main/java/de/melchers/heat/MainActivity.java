@@ -140,6 +140,13 @@ public class MainActivity extends AppCompatActivity {
         this.excelExporter.saveGameState(playerCount);
     }
 
+    public void loadGame(View v) {
+        File pathName = new File("/storage/emulated/0/Documents/HEAT-Saves");
+        File fullPath = new File("/storage/emulated/0/Documents/HEAT-Saves/heat_save_v01.xls");
+        this.excelExporter.loadGameState("heat_save_v01.xls", pathName, fullPath);
+        Navigation.findNavController(v).navigate(R.id.navigation_dashboard);
+    }
+
     public void createFile(View view) { //Uri pickerInitialUri
         ExcelExporter.export();
 //        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);//, MediaStore.Downloads.EXTERNAL_CONTENT_URI);

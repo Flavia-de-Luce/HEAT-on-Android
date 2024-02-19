@@ -15,6 +15,7 @@ import java.util.Locale;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
+import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.Number;
 import jxl.write.WritableSheet;
@@ -41,6 +42,34 @@ public class ExcelExporter {
             System.out.println(sheet.getCell(1, 0).getContents());
 
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadGameState(String fileName, File pathName, File fullPath) {
+        int counter = 0;
+        boolean isDefined = true;
+
+        File directory = new File(pathName.getAbsolutePath());
+        File file = new File(directory, fileName);
+        WorkbookSettings wbSettings = new WorkbookSettings();
+        wbSettings.setLocale(new Locale(Locale.GERMAN.getLanguage(), Locale.GERMAN.getCountry()));
+        Workbook workbook;
+
+        try {
+            workbook = Workbook.getWorkbook(fullPath);
+            Sheet playerSheet = workbook.getSheet("Players");
+            Player[] players = new Player[playerSheet.getRows() - 2];
+            while (counter < playerSheet.getRows() - 2) {
+
+                Player player = new Player(playerSheet.getCell(1, counter + 2).getContents());
+                player.setLastPlacement(Integer.parseInt(playerSheet.getCell(2, counter + 2).getContents()));
+                player.setTotalScore(Integer.parseInt(playerSheet.getCell(3, counter + 2).getContents()));
+                players[counter] = player;
+                counter++;
+            }
+            this.viewModel.players = players;
+        } catch (BiffException | IOException e) {
             e.printStackTrace();
         }
     }

@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.openRunningSeasonBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)requireActivity()).openFile(view);
+                ((MainActivity)requireActivity()).loadGame(v);
             }
         });
     }
