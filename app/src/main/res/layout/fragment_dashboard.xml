@@ -7,38 +7,64 @@
     tools:context=".ui.dashboard.DashboardFragment">
 
 
-    <ScrollView
+<!--    <ScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" >-->
+
+    <TableLayout
+        android:id="@+id/table1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TableLayout
-            android:id="@+id/table1"
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center|top"
-                android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:gravity="center|top"
+            android:orientation="horizontal">
 
 
-                <TextView android:id="@+id/tHeadName"
-                    android:padding="15dp"
-                    android:text="@string/tHeadName" />
+            <TextView
+                android:id="@+id/tHeadName"
+                android:padding="15dp"
+                android:text="@string/tHeadName" />
 
-                <TextView
-                    android:id="@+id/tHeadLatestPlacement"
-                    android:padding="15dp"
-                    android:text="@string/tHeadLatestPlacement" />
+            <TextView
+                android:id="@+id/tHeadLatestPlacement"
+                android:padding="15dp"
+                android:text="@string/tHeadLatestPlacement" />
 
-                <TextView
-                    android:id="@+id/tHeadTotalScore"
-                    android:padding="15dp"
-                    android:text="@string/tHeadTotalScore" />
-            </TableRow>
-        </TableLayout>
-    </ScrollView>
+            <TextView
+                android:id="@+id/tHeadTotalScore"
+                android:padding="15dp"
+                android:text="@string/tHeadTotalScore" />
+        </TableRow>
+    </TableLayout>
+
+    <Button
+        android:id="@+id/enter_match_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_Match_Btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cancel_match_btn"
+        app:layout_constraintTop_toBottomOf="@+id/table1"
+        app:layout_constraintVertical_bias="0.25" />
+
+    <Button
+        android:id="@+id/cancel_match_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel_match_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/enter_match_btn"
+        app:layout_constraintTop_toBottomOf="@+id/table1"
+        app:layout_constraintVertical_bias="0.25"/>
+    <!--    </ScrollView>-->
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 <!--Dynamic Table with Header V 0.1  -->
