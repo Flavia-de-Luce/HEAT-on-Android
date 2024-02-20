@@ -2,14 +2,13 @@ package de.melchers.heat.classes;
 
 import androidx.lifecycle.ViewModel;
 
-import org.json.JSONArray;
-
-import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class HeatViewModel extends ViewModel {
-    public JSONArray playerArray;
     public Player[] players;
-//    public String[] playerNames;
-    public int[] playerPlacement;
-    public int[] playerScore;
+    public Cup currentCup;
+    public Season currentSeason;
+//    public Season[] seasons;
+    public ArrayList<Season> seasons = new ArrayList<>();
+    public String currentMapName;
 }

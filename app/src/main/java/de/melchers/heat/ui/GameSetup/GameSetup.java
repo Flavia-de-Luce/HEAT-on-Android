@@ -1,11 +1,11 @@
-package de.melchers.heat.ui.addPlayer;
+package de.melchers.heat.ui.GameSetup;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -19,19 +19,23 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.*;
+
+import java.util.ArrayList;
 
 import de.melchers.heat.MainActivity;
 import de.melchers.heat.R;
+import de.melchers.heat.classes.Cup;
 import de.melchers.heat.classes.HeatViewModel;
 import de.melchers.heat.classes.Player;
-import de.melchers.heat.ui.dashboard.DashboardFragment;
+import de.melchers.heat.classes.Race;
+import de.melchers.heat.classes.Season;
 
-public class AddPlayer extends Fragment {
+public class GameSetup extends Fragment {
     private int playerCount = 1;
     private HeatViewModel viewModel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,11 +45,11 @@ public class AddPlayer extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_player, container, false);
+        return inflater.inflate(R.layout.fragment_game_setup, container, false);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(HeatViewModel.class);
 
@@ -79,12 +83,41 @@ public class AddPlayer extends Fragment {
         }
 //        this.viewModel.playerNames = playerNames;
         this.viewModel.players = players;
-        ((MainActivity)requireActivity()).saveGame(this.playerCount);
-        Navigation.findNavController(view).navigate(R.id.navigation_dashboard);
+//        Dialog().show(supportFragmentManager, "Dialog title?");
+//        Dialog dialog = new Dialog();
+//        dialog.show(requireActivity().getSupportFragmentManager(), "map_dialog");
+//        openDialog();
+        ((MainActivity)requireActivity()).addNewRace(true);
+        Navigation.findNavController(requireView()).navigate(R.id.action_navigation_game_setup_to_navigation_dashboard);
+    }
+
+    private void openDialog() {
+        final View dialogView = getLayoutInflater().inflate(R.layout.fragment_dialog, null);
+        AlertDialog dialog = new AlertDialog.Builder(requireContext()).create();
+        dialog.setTitle("Karten Name");
+        dialog.setCancelable(false);
+        dialog.setView(dialogView);
+        final EditText mapName = dialogView.findViewById(R.id.inp_map_name);
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                viewModel.currentMapName = mapName.getText().toString();
+//                ((MainActivity)requireActivity()).addNewRace(true);
+//                Navigation.findNavController(requireView()).navigate(R.id.action_navigation_game_setup_to_navigation_dashboard);
+            }
+        });
+        dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Abbrechen", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     private void createTableRow(View view) {
-        if (this.playerCount < 6){
+        if (this.playerCount < 6) {
 
             TableLayout tl = requireView().findViewById(R.id.addplayerTable);
             View[] temp = new View[2];

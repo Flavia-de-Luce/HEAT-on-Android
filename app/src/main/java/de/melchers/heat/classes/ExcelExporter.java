@@ -1,15 +1,12 @@
 package de.melchers.heat.classes;
 
-import android.app.Activity;
-import android.os.Environment;
-import android.support.v4.app.INotificationSideChannel;
-
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 
+import org.json.JSONException;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Locale;
 
 import jxl.Sheet;
@@ -21,7 +18,6 @@ import jxl.write.Number;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
-import jxl.write.biff.RowsExceededException;
 
 public class ExcelExporter {
     private HeatViewModel viewModel;
@@ -74,38 +70,38 @@ public class ExcelExporter {
         }
     }
 
-    public void saveGameState(int playerCount) {
-        File savePath = new File("/storage/emulated/0/Documents/HEAT-Saves");
-        String fileName = "heat_save_v01.xls";
-        File directory = new File(savePath.getAbsolutePath());
-        if (!directory.isDirectory()) {
-            directory.mkdirs();
-        }
-        try {
-            File file = new File(directory, fileName);
-            WorkbookSettings wbSettings = new WorkbookSettings();
-            wbSettings.setLocale(new Locale(Locale.GERMAN.getLanguage(), Locale.GERMAN.getCountry()));
-            WritableWorkbook workbook;
-            workbook = Workbook.createWorkbook(file, wbSettings);
-
-            WritableSheet playerSheet = workbook.createSheet("Players", 0);
-
-            playerSheet.addCell(new Label(1, 1, "Player"));
-            playerSheet.addCell(new Label(2, 1, "Last placement"));
-            playerSheet.addCell(new Label(3, 1, "Total Score"));
-
-            for (int i = 0; i < playerCount; i++) {
-                playerSheet.addCell(new Label(1, i + 2, this.viewModel.players[i].getName()));
-                playerSheet.addCell(new Number(2, i + 2, this.viewModel.players[i].getLastPlacement()));
-                playerSheet.addCell(new Number(3, i + 2, this.viewModel.players[i].getTotalScore()));
-
-            }
-            workbook.write();
-            workbook.close();
-        } catch (IOException | WriteException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void saveGameState() {
+//        File savePath = new File("/storage/emulated/0/Documents/HEAT-Saves");
+//        String fileName = "heat_save_v01.xls";
+//        File directory = new File(savePath.getAbsolutePath());
+//        if (!directory.isDirectory()) {
+//            directory.mkdirs();
+//        }
+//        try {
+//            File file = new File(directory, fileName);
+//            WorkbookSettings wbSettings = new WorkbookSettings();
+//            wbSettings.setLocale(new Locale(Locale.GERMAN.getLanguage(), Locale.GERMAN.getCountry()));
+//            WritableWorkbook workbook;
+//            workbook = Workbook.createWorkbook(file, wbSettings);
+//
+//            WritableSheet playerSheet = workbook.createSheet("Players", 0);
+//
+//            playerSheet.addCell(new Label(1, 1, "Player"));
+//            playerSheet.addCell(new Label(2, 1, "Last placement"));
+//            playerSheet.addCell(new Label(3, 1, "Total Score"));
+//
+//            for (int i = 0; i < this.viewModel.players.length; i++) {
+//                playerSheet.addCell(new Label(1, i + 2, this.viewModel.players[i].getName()));
+//                playerSheet.addCell(new Number(2, i + 2, this.viewModel.players[i].getLastPlacement()));
+//                playerSheet.addCell(new Number(3, i + 2, this.viewModel.players[i].getTotalScore()));
+//
+//                workbook.write();
+//                workbook.close();
+//            } catch (IOException | WriteException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//            }
 
     public static void export() {
         //File sd = Environment.getExternalStorageDirectory();
@@ -154,4 +150,76 @@ public class ExcelExporter {
             e.printStackTrace();
         }
     }
+
+    public void saveGameStateNew() {
+        File savePath = new File("/storage/emulated/0/Documents/HEAT-Saves");
+        String fileName = "heat_save_v01.xls";
+        File directory = new File(savePath.getAbsolutePath());
+        if (!directory.isDirectory()) {
+            directory.mkdirs();
+        }
+        try {
+            File file = new File(directory, fileName);
+            WorkbookSettings wbSettings = new WorkbookSettings();
+            wbSettings.setLocale(new Locale(Locale.GERMAN.getLanguage(), Locale.GERMAN.getCountry()));
+            WritableWorkbook workbook;
+            workbook = Workbook.createWorkbook(file, wbSettings);
+
+            WritableSheet playerSheet = workbook.createSheet("Players", 0);
+
+            playerSheet.addCell(new Label(1, 1, "Player"));
+            playerSheet.addCell(new Label(1, 2, "Last placement"));
+            playerSheet.addCell(new Label(1, 3, "Total Score"));
+            for (int i = 0; i < viewModel.players.length; i++) {
+                playerSheet.addCell(new Label(2 + i,1, this.viewModel.players[i].getName()));
+                playerSheet.addCell(new Number(2 + i, 2, this.viewModel.players[i].getLastPlacement()));
+                playerSheet.addCell(new Number(2 + i, 3, this.viewModel.players[i].getTotalScore()));
+
+            }
+            //TODO: NICHT VERGESSEN
+            int lastWrittenRow = 3;
+            // Each Season
+            for (Season season:viewModel.seasons) {
+                playerSheet.addCell(new Label(1, lastWrittenRow + 1, "Season " + season.id));
+                lastWrittenRow++;
+                // Each Cup
+                for (Cup cup:season.cups) {
+                    playerSheet.addCell(new Label(1, lastWrittenRow + 1, "Cup " + cup.id));
+                    lastWrittenRow++;
+                    // Each Race
+                    for (int i = 0; i < cup.races.size(); i++){
+                        playerSheet.addCell(new Label(1, lastWrittenRow + 1, "Rennen " + i + ", " + cup.getRaces().get(i).getMapName()));
+                        lastWrittenRow++;
+                        // Each Player
+//                        for (Player player:viewModel.players) {
+                        for (int y = 0; y < viewModel.players.length; y++){
+                            // TODO: Das darf nicht funktionieren...
+                            try {
+//                                playerSheet.addCell(new Number(2 + i, lastWrittenRow, cup.races.get(i).getResults().getJSONObject(cup.races.get(i).getMapName()).getDouble(player.getName())));// .cup.getJSONObject(i).getJSONObject(cup.getCurrentRace().getMapName()).getDouble(player.getName())));
+                                playerSheet.addCell(new Number(2 + y, lastWrittenRow, cup.races.get(i).getResults().getDouble(viewModel.players[y].getName())));
+                            }catch (JSONException e){
+                                e.printStackTrace();
+                            }
+                        }
+//                        for (int y = 0; y < cup.cup.getJSONObject(i).length(); y++){
+//                            JSONObject playerResult = cup.cup.getJSONObject(i);
+//
+//                        }
+                    }
+
+                }
+            }
+
+            // for each Season
+                // for each cup
+                    //for each race
+                        // Save each race and result
+
+            workbook.write();
+            workbook.close();
+        } catch (IOException | WriteException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

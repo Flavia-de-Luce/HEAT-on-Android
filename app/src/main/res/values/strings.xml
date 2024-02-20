@@ -27,4 +27,8 @@
     <string name="submit_round_results_btn">Speichern</string>
     <string name="cancel_round_results_btn">Abbrechen</string>
 
+    <!--    Dialog Fragment-->
+    <string name="hint_map_name">Rennstrecken Name</string>
+    <string name="lbl_map_name">Name der Strecke</string>
+
 </resources>

@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_add_player"
+        android:id="@+id/navigation_game_setup"
         android:title="Add Player" />
     <item
         android:id="@+id/navigation_home"
