@@ -3,11 +3,19 @@ package de.melchers.heat.classes;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Cup {
     public int id;
+    public ArrayList<Race> races = new ArrayList<>();
+    public HashMap<Player, Integer> totalScore = new HashMap<>();
+}
+
+class OldCup {
+    public int id;
     public Race currentRace; //race.put("Johanna", 1) [...]
     public ArrayList<Race> races = new ArrayList<>();
+
 //    JSONArray cup; //cup.put(roundJ)
     /**
      * JSONObject temp = new JSONObject();
@@ -31,12 +39,6 @@ public class Cup {
     public void setRaces(ArrayList<Race> races) {
         this.races = races;
     }
-    //
-//    public JSONArray getCup() {
-//        return cup;
-//    }
-//
-//    public void setCup(JSONArray cup) {
-//        this.cup = cup;
-//    }
 }
+
+

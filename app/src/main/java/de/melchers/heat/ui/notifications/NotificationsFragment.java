@@ -15,10 +15,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import de.melchers.heat.MainActivity;
 import de.melchers.heat.R;
 import de.melchers.heat.classes.HeatViewModel;
 import de.melchers.heat.classes.Player;
+import de.melchers.heat.classes.Race;
 import de.melchers.heat.databinding.FragmentNotificationsBinding;
 
 public class NotificationsFragment extends Fragment {
@@ -59,21 +63,23 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void submitGameResults(View view) {
-        Player[] players = viewModel.players;
+        ArrayList<Player> players = viewModel.players;
         int viewId = 300;
         EditText temp;
-        for (int i = 0; i < players.length; i++){
+        for (int i = 0; i < players.size(); i++){
             temp = requireView().findViewById(viewId + i);
-            players[i].setLastPlacement(Integer.parseInt(temp.getText().toString()));
+            players.get(i).setLastPlacement(Integer.parseInt(temp.getText().toString()));
         }
-        ((MainActivity)requireActivity()).addNewRace(false);
         ((MainActivity)requireActivity()).calculateResults(players);
+        ((MainActivity)requireActivity()).addNewRace(false);
+
         Navigation.findNavController(view).navigate(R.id.action_navigation_notifications_to_navigation_dashboard);
     }
 
     private void createRoundResult(){
-        int playerCount = viewModel.players.length;
-        Player[] players = viewModel.players;
+        int playerCount = viewModel.players.size();
+
+        ArrayList<Player> players = viewModel.players;
         LinearLayout layout = requireView().findViewById(R.id.Notification_Layout);
         View[] names = new View[playerCount];
         EditText[] editTexts = new EditText[playerCount];
@@ -81,7 +87,7 @@ public class NotificationsFragment extends Fragment {
         for (int i = 0; i < playerCount; i++) {
             names[i] = LayoutInflater.from(requireActivity()).inflate(R.layout.template_add_player_label, null);
             names[i].setId(i + 200);
-            ((TextView)names[i]).setText(players[i].getName());
+            ((TextView)names[i]).setText(players.get(i).getName());
             editTexts[i] = ((EditText)LayoutInflater.from(requireActivity()).inflate(R.layout.template_input_number, null));
             editTexts[i].setId(i + 300);
             editTexts[i].setHint("Platzierung");
@@ -100,7 +106,15 @@ public class NotificationsFragment extends Fragment {
         dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                viewModel.currentMapName = mapName.getText().toString();
+                if (!viewModel.currentRace.getMapName().equals("")){
+                    viewModel.currentRace = new Race();
+                    if (viewModel.currentCup.races.size() == 0) {
+                    viewModel.currentCup.races.add(viewModel.currentRace);
+                    }
+                    viewModel.currentRace.setId(viewModel.currentCup.races.get(viewModel.currentCup.races.size() - 1).getId() + 1);
+                }
+                viewModel.currentRace.setMapName(mapName.getText().toString());
+//                viewModel.currentMapName = mapName.getText().toString();
             }
         });
         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Abbrechen", new DialogInterface.OnClickListener() {

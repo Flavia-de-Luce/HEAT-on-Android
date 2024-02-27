@@ -21,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import de.melchers.heat.R;
+import de.melchers.heat.classes.Cup;
 import de.melchers.heat.classes.HeatViewModel;
 import de.melchers.heat.classes.Player;
 import de.melchers.heat.databinding.FragmentDashboardBinding;
@@ -35,13 +36,15 @@ public class DashboardFragment extends Fragment {
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-
         return root;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(requireActivity()).get(HeatViewModel.class);
+        if (viewModel.cups.size() == 0) {
+            binding.enterMatchBtn.setVisibility(View.INVISIBLE);
+        }
         JSONArray playerArray = new JSONArray();
         try {
             for (Player player : viewModel.players) {
@@ -65,6 +68,30 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_home);
+            }
+        });
+
+        view.findViewById(R.id.add_cup_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (viewModel.cups.size() == 0 && viewModel.currentCup == null) {
+                    viewModel.currentCup = new Cup();
+                    viewModel.currentCup.id = 1;
+                    viewModel.cups.add(viewModel.currentCup);
+                    binding.enterMatchBtn.setVisibility(View.VISIBLE);
+                    Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_notifications);
+                } else {
+                    if (viewModel.cups.contains(viewModel.currentCup)){
+
+                        viewModel.cups.set(viewModel.cups.indexOf(viewModel.currentCup), viewModel.currentCup);
+                    } else {
+                        viewModel.cups.add(viewModel.currentCup);
+                    }
+                    viewModel.currentCup = new Cup();
+                    viewModel.currentCup.id = viewModel.cups.size() + 1;
+//                    viewModel.currentCup
+                    Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_notifications);
+                }
             }
         });
 

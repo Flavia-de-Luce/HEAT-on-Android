@@ -1,10 +1,11 @@
 package de.melchers.heat.classes;
 
 public class Player {
-    int lastPlacement = 0;
-    int totalScore = 0;
-    String name;
-    int seasons;
+    private int lastPlacement = 0;
+    private int totalScore = 0;
+    private String name;
+    private int seasons;
+
     public Player(String name){
         this.name = name;
     }

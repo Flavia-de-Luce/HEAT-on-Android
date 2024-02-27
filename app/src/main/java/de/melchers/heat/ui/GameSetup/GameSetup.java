@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import de.melchers.heat.MainActivity;
 import de.melchers.heat.R;
@@ -82,15 +83,17 @@ public class GameSetup extends Fragment {
             players[i] = new Player(temp2.getText().toString());
         }
 //        this.viewModel.playerNames = playerNames;
-        this.viewModel.players = players;
+        this.viewModel.players.addAll(Arrays.asList(players));
+
 //        Dialog().show(supportFragmentManager, "Dialog title?");
 //        Dialog dialog = new Dialog();
 //        dialog.show(requireActivity().getSupportFragmentManager(), "map_dialog");
 //        openDialog();
-        ((MainActivity)requireActivity()).addNewRace(true);
+
+//        ((MainActivity)requireActivity()).addNewRace(true);
         Navigation.findNavController(requireView()).navigate(R.id.action_navigation_game_setup_to_navigation_dashboard);
     }
-
+/**
     private void openDialog() {
         final View dialogView = getLayoutInflater().inflate(R.layout.fragment_dialog, null);
         AlertDialog dialog = new AlertDialog.Builder(requireContext()).create();
@@ -115,7 +118,7 @@ public class GameSetup extends Fragment {
 
         dialog.show();
     }
-
+**/
     private void createTableRow(View view) {
         if (this.playerCount < 6) {
 

@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -14,14 +17,19 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
@@ -34,6 +42,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.melchers.heat.classes.Cup;
 import de.melchers.heat.classes.ExcelExporter;
@@ -43,7 +53,7 @@ import de.melchers.heat.classes.Race;
 import de.melchers.heat.classes.Season;
 import de.melchers.heat.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final String LAST_OPENED_URI_KEY = "de.melchers.heat.actionopendocument.pref.LAST_OPENED_URI_KEY";
     private ActivityMainBinding binding;
     public HeatViewModel mViewModel;
@@ -53,9 +63,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // TODO: Implement ViewModel.
-        // Hoffnung: MainActivity hält das ViewModel vor und alle Fragments können sich die Daten holen die sie benötigen.
-        //           Und MainActivity kann die selben Daten bei änderungen direkt in die .xls speichern :D
 
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -63,8 +70,23 @@ public class MainActivity extends AppCompatActivity {
         this.mViewModel = new ViewModelProvider(this).get(HeatViewModel.class);
         this.excelExporter = new ExcelExporter(this);
 
-        NavController navController = NavHostFragment.findNavController(binding.navHostFragment.getFragment());
+//        NavController navController = NavHostFragment.findNavController(binding.navHostFragment.getFragment());
+        NavController navController = NavHostFragment.findNavController(binding.appBarMainInclude.contentMainInclude.navHostFragment.getFragment());
         navController.setGraph(R.navigation.mobile_navigation);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        toolbar.setOnMenuItemClickListener(this);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.action_bar_open, R.string.action_bar_close);
+
+        drawerLayout.addDrawerListener(toggle);
+
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener((NavigationView.OnNavigationItemSelectedListener) this);
 
         askForPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE, 11);
         askForPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, 12);
@@ -74,64 +96,31 @@ public class MainActivity extends AppCompatActivity {
     private static final int PICK_PDF_FILE = 2;
 
     public void addNewRace(boolean isInitial) {
-        JSONObject temp = new JSONObject();
-        Season season;
-        Cup cup;
+        HashMap<Player, Integer> temp2 = new HashMap<>();
         Race race;
-        if (isInitial) {
-            season = new Season();
-            cup = new Cup();
-            race = new Race();
-            try {
-                for (Player player : mViewModel.players) {
-                    temp.put(player.getName(), 0);
-                }
-//            cup.setRace(new JSONObject().put(viewModel.currentMapName, temp));
-                race.setResults(temp);
-                race.setMapName(mViewModel.currentMapName);
-                cup.setCurrentRace(race);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-            cup.races.add(race);
-            cup.id = 1;
-            season.cups.add(cup);
-            season.id = 1;
-            mViewModel.seasons.add(season);
-            mViewModel.currentSeason = season;
-        } else {
-            season = mViewModel.currentSeason;
-            cup = mViewModel.currentCup;
-            try {
-                for (Player player : mViewModel.players) {
-                    temp.put(player.getName(), calculateSingleResult(player.getLastPlacement()));
-                }
-                // Wenn aktuell 0 als Renn-Ergebnis gespeichert ist
-                if (mViewModel.currentCup.getCurrentRace().getResults().getInt(mViewModel.players[0].getName()) == 0) {
-                    race = mViewModel.currentCup.currentRace;
-                    race.setId(1);
-                    race.setResults(temp);
-                    race.setMapName(mViewModel.currentMapName);
-                    cup.races.set(0, race);
-                } else {
-                    race = new Race();
-                    race.setId(mViewModel.currentCup.currentRace.getId() + 1);
-                    race.setResults(temp);
-                    race.setMapName(mViewModel.currentMapName);
-                    cup.races.add(race);
-                    mViewModel.currentSeason.cups.set(cup.id - 1, cup);
-                    mViewModel.seasons.set(season.id - 1, mViewModel.currentSeason);
-                }
-
-                cup.setCurrentRace(race);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+        for (Player player : mViewModel.players) {
+            temp2.put(player, calculateSingleResult(player.getLastPlacement()));
         }
-        mViewModel.currentSeason = season;
-        mViewModel.currentCup = cup;
+        race = mViewModel.currentRace;
+        race.setResults(temp2);
+        if (!mViewModel.currentCup.races.contains(race)) {
+            mViewModel.currentCup.races.add(race);
+        }
+
+        mViewModel.currentRace = race;
+        calculateCupTotal(mViewModel.currentCup);
         this.saveGame();
 
+    }
+
+    private void calculateCupTotal(Cup cup) {
+        for (Player player : mViewModel.players) {
+            int totalScore = 0;
+            for (Race race : cup.races) {
+                totalScore += race.results.get(player);
+            }
+            cup.totalScore.put(player, totalScore);
+        }
     }
 
     private int calculateSingleResult(int placement) {
@@ -154,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public Player[] calculateResults(Player[] players) {
+    public ArrayList<Player> calculateResults(ArrayList<Player> players) {
         for (Player player : players) {
             switch (player.getLastPlacement()) {
                 case 1:
@@ -181,18 +170,21 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        saveGame();
+//        saveGame();
         return players;
     }
 
     public void saveGame() {
+        if (!mViewModel.cups.contains(mViewModel.currentCup)) {
+            mViewModel.cups.add(mViewModel.currentCup);
+        }
         this.excelExporter.saveGameStateNew();
     }
 
     public void loadGame(View v) {
         File pathName = new File("/storage/emulated/0/Documents/HEAT-Saves");
         File fullPath = new File("/storage/emulated/0/Documents/HEAT-Saves/heat_save_v01.xls");
-        this.excelExporter.loadGameState("heat_save_v01.xls", pathName, fullPath);
+        this.excelExporter.loadGameStateNew("heat_save_v01.xls", pathName, fullPath);
 //        Navigation.findNavController(v).navigate(R.id.navigation_dashboard);
     }
 
@@ -228,4 +220,86 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.activity_main_drawer, menu);
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+            Toast.makeText(this, "Ratta Pew", Toast.LENGTH_LONG).show();
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    public void resetModel() {
+        mViewModel.cups = new ArrayList<>();
+        mViewModel.players = new ArrayList<>();
+        mViewModel.currentCup = null;
+        mViewModel.currentRace = new Race();
+    }
+
+    /** @noinspection StatementWithEmptyBody*/
+//    @Override
+//    public boolean onMenuItemClick(MenuItem item) {
+//        // Handle navigation view item clicks here.
+//        int id = item.getItemId();
+//
+//        if (id == R.id.nav_camera) {
+//            // Handle the camera action
+//        } else if (id == R.id.nav_gallery) {
+//            Toast.makeText(this, "Ratta Pew", Toast.LENGTH_LONG).show();
+//
+//        } else if (id == R.id.nav_slideshow) {
+//
+//        } else if (id == R.id.nav_manage) {
+//
+//        }
+//
+////        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+////        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
 }
