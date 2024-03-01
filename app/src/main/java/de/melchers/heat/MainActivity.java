@@ -1,45 +1,26 @@
 package de.melchers.heat;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.MimeTypeMap;
-import android.widget.Button;
-import android.widget.Switch;
 import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,14 +31,16 @@ import de.melchers.heat.classes.ExcelExporter;
 import de.melchers.heat.classes.HeatViewModel;
 import de.melchers.heat.classes.Player;
 import de.melchers.heat.classes.Race;
-import de.melchers.heat.classes.Season;
 import de.melchers.heat.databinding.ActivityMainBinding;
+import de.melchers.heat.ui.dashboard.DashboardFragment;
+import de.melchers.heat.ui.home.HomeFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final String LAST_OPENED_URI_KEY = "de.melchers.heat.actionopendocument.pref.LAST_OPENED_URI_KEY";
     private ActivityMainBinding binding;
     public HeatViewModel mViewModel;
     private ExcelExporter excelExporter;
+    private NavController navController;
 
 
     @Override
@@ -70,19 +53,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.mViewModel = new ViewModelProvider(this).get(HeatViewModel.class);
         this.excelExporter = new ExcelExporter(this);
 
-//        NavController navController = NavHostFragment.findNavController(binding.navHostFragment.getFragment());
-        NavController navController = NavHostFragment.findNavController(binding.appBarMainInclude.contentMainInclude.navHostFragment.getFragment());
+        navController = NavHostFragment.findNavController(binding.appBarMainInclude.contentMainInclude.navHostFragment.getFragment());
         navController.setGraph(R.navigation.mobile_navigation);
 
+        // Toolbar Navigation Setup
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.setOnMenuItemClickListener(this);
         setSupportActionBar(toolbar);
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.action_bar_open, R.string.action_bar_close);
-
         drawerLayout.addDrawerListener(toggle);
-
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -93,7 +73,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private static final int PICK_PDF_FILE = 2;
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_cup_list) {
+            // TODO: Ermittlung des aktiven Fragmentes und anschließende Navigation
+            if (mViewModel.currentCup != null) {
+                navController.navigate(R.id.cupFragment);
+            } else {
+                Toast.makeText(this, "Bitte erst ein Spiel starten", Toast.LENGTH_LONG).show();
+            }
+        } else if (id == R.id.nav_dashboard) {
+            if (mViewModel.currentCup != null) {
+                navController.navigate(R.id.navigation_dashboard);
+            } else {
+                Toast.makeText(this, "Bitte erst ein Spiel starten", Toast.LENGTH_LONG).show();
+            }
+        } else if (id == R.id.nav_home) {
+            navController.navigate(R.id.navigation_home);
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 
     public void addNewRace(boolean isInitial) {
         HashMap<Player, Integer> temp2 = new HashMap<>();
@@ -143,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public ArrayList<Player> calculateResults(ArrayList<Player> players) {
+    public void calculateResults(ArrayList<Player> players) {
         for (Player player : players) {
             switch (player.getLastPlacement()) {
                 case 1:
@@ -171,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 //        saveGame();
-        return players;
     }
 
     public void saveGame() {
@@ -252,27 +254,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-            Toast.makeText(this, "Ratta Pew", Toast.LENGTH_LONG).show();
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 
     public void resetModel() {
         mViewModel.cups = new ArrayList<>();

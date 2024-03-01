@@ -123,6 +123,7 @@ public class ExcelExporter {
                     }
                     lastReadRow++;
                 }
+                lastReadRow += 2;
                 viewModel.cups.add(cup);
 
             }

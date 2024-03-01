@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_navigation_home_to_navigation_dashboard"
             app:destination="@id/navigation_dashboard" />
+        <action
+            android:id="@+id/action_navigation_home_to_cupFragment"
+            app:destination="@id/cupFragment" />
     </fragment>
 
     <fragment
@@ -29,6 +32,9 @@
         <action
             android:id="@+id/action_navigation_dashboard_to_navigation_home"
             app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_cupFragment"
+            app:destination="@id/cupFragment" />
     </fragment>
 
     <fragment
@@ -51,6 +57,18 @@
         tools:layout="@layout/fragment_game_setup" >
         <action
             android:id="@+id/action_navigation_game_setup_to_navigation_dashboard"
+            app:destination="@id/navigation_dashboard" />
+    </fragment>
+    <fragment
+        android:id="@+id/cupFragment"
+        android:name="de.melchers.heat.ui.CupList.CupFragment"
+        android:label="fragment_cup_list"
+        tools:layout="@layout/fragment_cup_list" >
+        <action
+            android:id="@+id/action_cupFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_cupFragment_to_navigation_dashboard"
             app:destination="@id/navigation_dashboard" />
     </fragment>
 </navigation>
