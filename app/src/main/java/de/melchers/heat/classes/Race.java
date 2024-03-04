@@ -2,10 +2,12 @@ package de.melchers.heat.classes;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 public class Race {
     private int id;
-    private JSONObject results;
-    private String mapName;
+    public HashMap<Player, Integer> results;
+    private String mapName = "";
 
     public int getId() {
         return id;
@@ -15,11 +17,11 @@ public class Race {
         this.id = id;
     }
 
-    public JSONObject getResults() {
+    public HashMap<Player, Integer> getResults() {
         return results;
     }
 
-    public void setResults(JSONObject results) {
+    public void setResults(HashMap<Player, Integer> results) {
         this.results = results;
     }
 
@@ -31,3 +33,5 @@ public class Race {
         this.mapName = mapName;
     }
 }
+
+

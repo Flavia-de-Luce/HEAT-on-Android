@@ -32,6 +32,7 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.createNewSeasonBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((MainActivity)requireActivity()).resetModel();
                 Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_navigation_game_setup);
 //                ((MainActivity)requireActivity()).createFile(view);
             }
@@ -40,6 +41,7 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.openRunningSeasonBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((MainActivity)requireActivity()).resetModel();
                 ((MainActivity)requireActivity()).loadGame(v);
                 Navigation.findNavController(view).navigate(R.id.action_navigation_home_to_navigation_dashboard);
             }

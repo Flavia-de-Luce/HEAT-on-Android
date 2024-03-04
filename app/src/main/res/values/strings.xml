@@ -20,8 +20,9 @@
     <string name="label_add_player">Name: </string>
 
     <!--    Dashboard Fragment-->
-    <string name="enter_Match_Btn">Runde Eintragen</string>
+    <string name="enter_Match_Btn">+ Runde</string>
     <string name="cancel_match_btn">Menü</string>
+    <string name="add_cup_btn">+ Cup</string>
 
     <!--    Notification Fragment-->
     <string name="submit_round_results_btn">Speichern</string>
@@ -30,5 +31,10 @@
     <!--    Dialog Fragment-->
     <string name="hint_map_name">Rennstrecken Name</string>
     <string name="lbl_map_name">Name der Strecke</string>
+    <!--   ActionBarDrawerToggle-->
+    <string name="action_bar_open">Open</string>
+    <string name="action_bar_close">Close</string>
+    <!--   Cup Detail Fragment -->
+    <string name="cup_tHeadRace">Rennen</string>
 
 </resources>
