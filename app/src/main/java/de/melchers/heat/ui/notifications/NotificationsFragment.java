@@ -17,7 +17,6 @@ import androidx.navigation.Navigation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import de.melchers.heat.MainActivity;
 import de.melchers.heat.R;
 import de.melchers.heat.classes.HeatViewModel;
@@ -44,7 +43,6 @@ public class NotificationsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(HeatViewModel.class);
         openMapNameDialog();
-
         this.createRoundResult();
 
         view.findViewById(R.id.submit_round_results_btn).setOnClickListener(new View.OnClickListener() {

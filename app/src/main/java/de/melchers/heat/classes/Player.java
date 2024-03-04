@@ -5,7 +5,6 @@ public class Player {
     private int totalScore = 0;
     private String name;
     private int seasons;
-
     public Player(String name){
         this.name = name;
     }

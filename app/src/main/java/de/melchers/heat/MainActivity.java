@@ -20,8 +20,12 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
+import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -143,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.saveGame();
 
     }
-
     private void calculateCupTotal(Cup cup) {
         for (Player player : mViewModel.players) {
             int totalScore = 0;
@@ -201,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
-
+  
     public void saveGame() {
         if (!mViewModel.cups.contains(mViewModel.currentCup)) {
             mViewModel.cups.add(mViewModel.currentCup);
@@ -213,7 +216,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         File pathName = new File("/storage/emulated/0/Documents/HEAT-Saves");
         File fullPath = new File("/storage/emulated/0/Documents/HEAT-Saves/heat_save_v03.xls");
         this.excelExporter.loadGameStateNew("heat_save_v03.xls", pathName, fullPath);
-//        Navigation.findNavController(v).navigate(R.id.navigation_dashboard);
     }
 
     private void askForPermission(String permission, Integer requestCode) {
