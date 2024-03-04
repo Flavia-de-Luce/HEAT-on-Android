@@ -7,13 +7,14 @@
             android:icon="@drawable/ic_notifications_black_24dp"
             android:title="Hauptmenü" />
         <item
-            android:id="@+id/nav_cup_list"
-            android:icon="@drawable/ic_notifications_black_24dp"
-            android:title="Cup Liste"/>
-        <item
             android:id="@+id/nav_dashboard"
             android:icon="@drawable/ic_notifications_black_24dp"
             android:title="Gesamt Übersicht"/>
+        <item
+            android:id="@+id/nav_cup_list"
+            android:icon="@drawable/ic_notifications_black_24dp"
+            android:title="Cup Liste"/>
+
         <item
             android:id="@+id/nav_cup_detail"
             android:icon="@drawable/ic_notifications_black_24dp"

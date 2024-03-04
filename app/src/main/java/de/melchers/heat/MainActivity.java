@@ -211,8 +211,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void loadGame(View v) {
         File pathName = new File("/storage/emulated/0/Documents/HEAT-Saves");
-        File fullPath = new File("/storage/emulated/0/Documents/HEAT-Saves/heat_save_v01.xls");
-        this.excelExporter.loadGameStateNew("heat_save_v01.xls", pathName, fullPath);
+        File fullPath = new File("/storage/emulated/0/Documents/HEAT-Saves/heat_save_v03.xls");
+        this.excelExporter.loadGameStateNew("heat_save_v03.xls", pathName, fullPath);
 //        Navigation.findNavController(v).navigate(R.id.navigation_dashboard);
     }
 

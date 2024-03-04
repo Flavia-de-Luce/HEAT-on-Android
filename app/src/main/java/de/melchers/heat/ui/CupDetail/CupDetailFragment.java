@@ -75,7 +75,7 @@ public class CupDetailFragment extends Fragment {
         int rows = viewModel.currentCup.races.size();
         TableLayout tableLayout = requireView().findViewById(R.id.cup_detail_table);
         TextView header = requireView().findViewById(R.id.cup_tHeadRace);
-        header.setText("Cup " + this.cupNumber + 1);
+        header.setText("Cup " + (this.cupNumber + 1));
         // Initialise ViewArrays
         View[] temp = new View[cols];
         TextView[] tr_body = new TextView[cols];

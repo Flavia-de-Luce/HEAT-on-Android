@@ -93,7 +93,7 @@ public class ExcelExporter {
 
     public void saveGameStateNew() {
         File savePath = new File("/storage/emulated/0/Documents/HEAT-Saves");
-        String fileName = "heat_save_v01.xls";
+        String fileName = "heat_save_v03.xls";
         File directory = new File(savePath.getAbsolutePath());
         if (!directory.isDirectory()) {
             directory.mkdirs();
@@ -107,9 +107,9 @@ public class ExcelExporter {
             workbook = Workbook.createWorkbook(file, wbSettings);
             WritableSheet sheet = workbook.createSheet("HEAT", 0);
             // Save Player Info
-            sheet.addCell(new Label(0, 2, "Player"));
-            sheet.addCell(new Label(0, 3, "Last placement"));
-            sheet.addCell(new Label(0, 4, "Total Score"));
+            sheet.addCell(new Label(0, 2, "Spieler"));
+            sheet.addCell(new Label(0, 3, "Letzte Platzierung"));
+            sheet.addCell(new Label(0, 4, "Gesamt Punkte"));
             for (int i = 0; i < viewModel.players.size(); i++) {
                 sheet.addCell(new Label(1 + i, 2, this.viewModel.players.get(i).getName()));
                 sheet.addCell(new Number(1 + i, 3, this.viewModel.players.get(i).getLastPlacement()));
