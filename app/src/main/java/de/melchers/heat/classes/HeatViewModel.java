@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 
 import de.melchers.heat.R;
+import de.melchers.heat.ui.CupList.CupRecyclerViewAdapter;
 
 
 public class HeatViewModel extends ViewModel {
@@ -15,13 +16,5 @@ public class HeatViewModel extends ViewModel {
     public ArrayList<Player> players = new ArrayList<>();
     public Cup currentCup; // = new Cup();
     public Race currentRace = new Race();
-}
-
-class OldHeatViewModel extends ViewModel {
-    public Player[] players;
-    public Cup currentCup;
-    public Season currentSeason;
-    //    public Season[] seasons;
-    public ArrayList<Season> seasons = new ArrayList<>();
-    public String currentMapName;
+    public CupRecyclerViewAdapter cupAdapter;
 }

@@ -24,7 +24,7 @@ import de.melchers.heat.ui.placeholder.PlaceholderContent;
 /**
  * A fragment representing a list of Items.
  */
-public class CupFragment extends Fragment implements AdapterView.OnClickListener {
+public class CupFragment extends Fragment{
     private HeatViewModel viewModel;
 
     // TODO: Customize parameter argument names
@@ -72,23 +72,11 @@ public class CupFragment extends Fragment implements AdapterView.OnClickListener
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new CupRecyclerViewAdapter(viewModel.cups));
+            recyclerView.setAdapter(viewModel.cupAdapter);
         }
         return view;
     }
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
-        RecyclerView listView = (RecyclerView) requireActivity().findViewById(R.id.cup_recycler);
-        listView.setOnClickListener(this);
-    }
-
-//    @Override
-//    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//    }
-
-    @Override
-    public void onClick(View v) {
-        Toast.makeText(requireActivity(), "TEST", Toast.LENGTH_LONG).show();
     }
 }

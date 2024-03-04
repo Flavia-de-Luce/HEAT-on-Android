@@ -32,7 +32,6 @@ public class DashboardFragment extends Fragment {
     private HeatViewModel viewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //DashboardViewModel dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -89,7 +88,6 @@ public class DashboardFragment extends Fragment {
                     }
                     viewModel.currentCup = new Cup();
                     viewModel.currentCup.id = viewModel.cups.size() + 1;
-//                    viewModel.currentCup
                     Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_notifications);
                 }
             }
@@ -101,15 +99,6 @@ public class DashboardFragment extends Fragment {
     private void createTableFromTemplate(JSONArray playerArray) throws JSONException {
         int cols = 3;
         TableLayout tl = requireView().findViewById(R.id.table1);
-        // Initialise Data Objects
-        JSONArray dataSet = new JSONArray();
-        JSONObject data = new JSONObject();
-        // Generate Placeholder Data
-        data.put("Name", "Peter");
-        data.put("LatestPlacement", 1);
-        data.put("TotalScore", 12);
-        dataSet.put(data);
-
         // Initialise ViewArrays
         View[] temp = new View[cols];
         TextView[] tr_body = new TextView[cols];
@@ -124,8 +113,6 @@ public class DashboardFragment extends Fragment {
                 playerPlacement = playerList.getInt(("LatestPlacement"));
                 playerScore = playerList.getInt("TotalScore");
             }
-
-
             // Generate Table rows
             tr_head[i] = new TableRow(getActivity());
             tr_head[i].setId(i + 1);
