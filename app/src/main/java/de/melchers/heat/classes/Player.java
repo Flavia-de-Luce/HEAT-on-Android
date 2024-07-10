@@ -1,13 +1,21 @@
 package de.melchers.heat.classes;
 
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.HashMap;
+
 public class Player {
     private int lastPlacement = 0;
     private int totalScore = 0;
     private String name;
     private int seasons;
+    public HashMap<Integer, Integer> allPlacements = new HashMap<>();
+
     public Player(String name){
         this.name = name;
     }
+
+
     public String getName() {
         return name;
     }

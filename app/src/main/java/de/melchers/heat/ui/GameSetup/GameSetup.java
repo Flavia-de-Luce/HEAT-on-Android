@@ -84,13 +84,13 @@ public class GameSetup extends Fragment {
         }
 //        this.viewModel.playerNames = playerNames;
         this.viewModel.players.addAll(Arrays.asList(players));
+        for (Player player :
+                viewModel.players) {
+            for (int i = 1; i <= this.playerCount; i++) {
+                player.allPlacements.put(i, 0);
+            }
+        }
 
-//        Dialog().show(supportFragmentManager, "Dialog title?");
-//        Dialog dialog = new Dialog();
-//        dialog.show(requireActivity().getSupportFragmentManager(), "map_dialog");
-//        openDialog();
-
-//        ((MainActivity)requireActivity()).addNewRace(true);
         Navigation.findNavController(requireView()).navigate(R.id.action_navigation_game_setup_to_navigation_dashboard);
     }
 /**

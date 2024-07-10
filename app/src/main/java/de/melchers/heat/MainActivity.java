@@ -182,21 +182,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             switch (player.getLastPlacement()) {
                 case 1:
                     player.setTotalScore(player.getTotalScore() + 9);
+                    if (player.allPlacements.containsKey(1)){
+                        player.allPlacements.put(1, player.allPlacements.get(1) + 1);
+                    }
                     break;
                 case 2:
                     player.setTotalScore(player.getTotalScore() + 6);
+                    if (player.allPlacements.containsKey(2)){
+                        player.allPlacements.put(2, player.allPlacements.get(2) + 1);
+                    }
                     break;
                 case 3:
                     player.setTotalScore(player.getTotalScore() + 4);
+                    if (player.allPlacements.containsKey(3)){
+                        player.allPlacements.put(3, player.allPlacements.get(3) + 1);
+                    }
                     break;
                 case 4:
                     player.setTotalScore(player.getTotalScore() + 3);
+                    if (player.allPlacements.containsKey(4)){
+                        player.allPlacements.put(4, player.allPlacements.get(4) + 1);
+                    }
                     break;
                 case 5:
                     player.setTotalScore(player.getTotalScore() + 2);
+                    if (player.allPlacements.containsKey(5)){
+                        player.allPlacements.put(5, player.allPlacements.get(5) + 1);
+                    }
                     break;
                 case 6:
                     player.setTotalScore(player.getTotalScore() + 1);
+                    if (player.allPlacements.containsKey(6)){
+                        player.allPlacements.put(6, player.allPlacements.get(6) + 1);
+                    }
                     break;
                 default:
                     Toast.makeText(this, "KEINE PLATZIERUNG von" + player.getName(), Toast.LENGTH_LONG).show();
@@ -278,5 +296,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mViewModel.players = new ArrayList<>();
         mViewModel.currentCup = null;
         mViewModel.currentRace = new Race();
+        mViewModel.lastUserInput = new ArrayList<>();
     }
 }
