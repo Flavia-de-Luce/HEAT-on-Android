@@ -38,12 +38,17 @@ public class DashboardFragment extends Fragment {
         return root;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(requireActivity()).get(HeatViewModel.class);
         if (viewModel.cups.size() == 0) {
             binding.enterMatchBtn.setVisibility(View.INVISIBLE);
         }
+        TextView roundCount = view.findViewById(R.id.roundCount);
+        TextView cupCount = view.findViewById(R.id.cupCount);
+        roundCount.setText(String.valueOf(viewModel.currentCup.races.size()));
+        cupCount.setText(String.valueOf(viewModel.cups.size()));
         JSONArray playerArray = new JSONArray();
         try {
             for (Player player : viewModel.players) {

@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import de.melchers.heat.R;
 import de.melchers.heat.classes.HeatViewModel;
-import de.melchers.heat.ui.placeholder.PlaceholderContent;
 
 /**
  * A fragment representing a list of Items.
