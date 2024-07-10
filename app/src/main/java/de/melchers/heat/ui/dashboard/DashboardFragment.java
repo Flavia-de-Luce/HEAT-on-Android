@@ -21,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import de.melchers.heat.R;
+import de.melchers.heat.classes.Cup;
 import de.melchers.heat.classes.HeatViewModel;
 import de.melchers.heat.classes.Player;
 import de.melchers.heat.databinding.FragmentDashboardBinding;
@@ -31,25 +32,30 @@ public class DashboardFragment extends Fragment {
     private HeatViewModel viewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //DashboardViewModel dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
-
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
 
         return root;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(requireActivity()).get(HeatViewModel.class);
+        if (viewModel.cups.size() == 0) {
+            binding.enterMatchBtn.setVisibility(View.INVISIBLE);
+        }
+        TextView roundCount = view.findViewById(R.id.roundCount);
+        TextView cupCount = view.findViewById(R.id.cupCount);
+        roundCount.setText(String.valueOf(viewModel.currentCup.races.size()));
+        cupCount.setText(String.valueOf(viewModel.cups.size()));
         JSONArray playerArray = new JSONArray();
         try {
             for (Player player : viewModel.players) {
                 JSONObject temp = new JSONObject();
-                temp.accumulate("Name", player.getName());
-                temp.accumulate("LatestPlacement", player.getLastPlacement());
-                temp.accumulate("TotalScore", player.getTotalScore());
+                temp.put("Name", player.getName());
+                temp.put("LatestPlacement", player.getLastPlacement());
+                temp.put("TotalScore", player.getTotalScore());
                 playerArray.put(temp);
             }
             createTableFromTemplate(playerArray);
@@ -59,13 +65,36 @@ public class DashboardFragment extends Fragment {
         view.findViewById(R.id.enter_match_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.navigation_notifications);
+                Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_notifications);
             }
         });
         view.findViewById(R.id.cancel_match_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.navigation_home);
+                Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_home);
+            }
+        });
+
+        view.findViewById(R.id.add_cup_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (viewModel.cups.size() == 0 && viewModel.currentCup == null) {
+                    viewModel.currentCup = new Cup();
+                    viewModel.currentCup.id = 1;
+                    viewModel.cups.add(viewModel.currentCup);
+                    binding.enterMatchBtn.setVisibility(View.VISIBLE);
+                    Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_notifications);
+                } else {
+                    if (viewModel.cups.contains(viewModel.currentCup)){
+
+                        viewModel.cups.set(viewModel.cups.indexOf(viewModel.currentCup), viewModel.currentCup);
+                    } else {
+                        viewModel.cups.add(viewModel.currentCup);
+                    }
+                    viewModel.currentCup = new Cup();
+                    viewModel.currentCup.id = viewModel.cups.size() + 1;
+                    Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_notifications);
+                }
             }
         });
 
@@ -75,15 +104,6 @@ public class DashboardFragment extends Fragment {
     private void createTableFromTemplate(JSONArray playerArray) throws JSONException {
         int cols = 3;
         TableLayout tl = requireView().findViewById(R.id.table1);
-        // Initialise Data Objects
-        JSONArray dataSet = new JSONArray();
-        JSONObject data = new JSONObject();
-        // Generate Placeholder Data
-        data.put("Name", "Peter");
-        data.put("LatestPlacement", 1);
-        data.put("TotalScore", 12);
-        dataSet.put(data);
-
         // Initialise ViewArrays
         View[] temp = new View[cols];
         TextView[] tr_body = new TextView[cols];
@@ -98,8 +118,6 @@ public class DashboardFragment extends Fragment {
                 playerPlacement = playerList.getInt(("LatestPlacement"));
                 playerScore = playerList.getInt("TotalScore");
             }
-
-
             // Generate Table rows
             tr_head[i] = new TableRow(getActivity());
             tr_head[i].setId(i + 1);
@@ -135,125 +153,11 @@ public class DashboardFragment extends Fragment {
                 tr_body[j].setPadding(10, 10, 10, 10);
                 tr_head[i].addView(tr_body[j]);
             }
-            // Switching column colors
-
             tl.addView(tr_head[i], new TableLayout.LayoutParams(
                     TableLayout.LayoutParams.MATCH_PARENT,
                     TableLayout.LayoutParams.WRAP_CONTENT));
-
-
-            // LayoutInflater.from(getActivity()).inflate(R.layout.table_text, null)
         }
     }
-
-    /*
-
-    private void createDynamicTable(View view, int rows, int cells) throws JSONException {
-        TableLayout tl = requireView().findViewById(R.id.table1);
-        FrameLayout fl = requireView().findViewById(R.id.frameLayout);
-        //TableData data = new TableData("Peter", 1, 12);
-        //JSONObject Jdata = new JSONObject((Map) data);
-        JSONArray dataSet = new JSONArray();
-        JSONObject data = new JSONObject();
-        JSONObject data2 = new JSONObject();
-
-        data.put("name", "Peter");
-        data.put("id", 1);
-        data.put("totalScore", 12);
-        dataSet.put(data);
-        data2.put("name", "Dieter");
-        data2.put("id", 2);
-        data2.put("totalScore", 10);
-        dataSet.put(data2);
-
-        TextView[] textArray = new TextView[3];
-        TableRow[] tr_head = new TableRow[rows];
-
-
-        // Create X Rows (rows)
-        for (int i = 0; i < rows; i++) {
-            //JSONObject product = data.getJSONObject(i);
-            JSONObject playerList = dataSet.getJSONObject(i);
-            String playerName = playerList.getString("name");
-            int playerId = playerList.getInt(("id"));
-            int playerScore = playerList.getInt("totalScore");
-
-            //Create the table rows
-            tr_head[i] = new TableRow(getActivity());
-            tr_head[i].setId(i + 1);
-            tr_head[i].setBackgroundColor(Color.GRAY);
-            tr_head[i].setLayoutParams(new TableRow.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT));
-
-            // Here create X Cells (cells)
-            for (int j = 0; j < cells; j++) {
-                textArray[j] = new TextView(getActivity());
-                textArray[j].setId(i + 111);
-                int height = 150;//TableRow.LayoutParams.MATCH_PARENT;
-                int width = 150;//tr_head[i].getLayoutParams().width;
-                TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(width, height);
-
-                textArray[j].setLayoutParams(layoutParams);
-                switch (j) {
-                    case 0:
-                        textArray[j].setText(Integer.toString(playerId));
-                        textArray[j].setGravity(Gravity.CENTER);
-                        break;
-                    case 1:
-                        textArray[j].setText(playerName);
-                        //textArray[j].setLayoutParams();
-                        break;
-                    case 2:
-                        textArray[j].setText(Integer.toString(playerScore));
-                        textArray[j].setGravity(Gravity.TOP);
-                        break;
-                    default:
-                        break;
-                }
-                textArray[j].setTextColor(Color.WHITE);
-                textArray[j].setPadding(10,10,10,10);
-                tr_head[i].addView(textArray[j]);
-            }
-            tl.addView(tr_head[i], new TableLayout.LayoutParams(
-                    TableLayout.LayoutParams.MATCH_PARENT,
-                    TableLayout.LayoutParams.WRAP_CONTENT));
-
-        }
-    }
-
-     */
-
-    /*
-    private void createTable(View view) {
-        TableLayout t1;
-        TableLayout tl = requireView().findViewById(R.id.table1);
-
-        TableRow tr_head = new TableRow(getActivity());
-        tr_head.setId(10);
-        tr_head.setBackgroundColor(Color.GRAY);
-        tr_head.setLayoutParams(new TableLayout.LayoutParams(
-                TableLayout.LayoutParams.MATCH_PARENT,
-                TableLayout.LayoutParams.WRAP_CONTENT));
-
-        TextView label_text = new TextView(getActivity());
-        label_text.setId(20);
-        label_text.setText("Hello");
-        label_text.setTextColor(Color.WHITE);
-        label_text.setPadding(5, 5, 5, 5);
-        tr_head.addView(label_text);
-
-        TextView next_text = new TextView(getActivity());
-        next_text.setId(21);
-        next_text.setText("Goodbye");
-        next_text.setTextColor(Color.RED);
-        next_text.setPadding(5, 5, 5, 5);
-        tr_head.addView(next_text);
-
-        tl.addView(tr_head, new TableLayout.LayoutParams(
-                TableLayout.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
-    }
-     */
 
     @Override
     public void onDestroyView() {

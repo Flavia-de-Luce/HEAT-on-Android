@@ -1,15 +1,20 @@
 package de.melchers.heat.classes;
 
+import android.view.View;
+
 import androidx.lifecycle.ViewModel;
 
-import org.json.JSONArray;
+import java.util.ArrayList;
 
-import java.lang.reflect.Array;
+import de.melchers.heat.R;
+import de.melchers.heat.ui.CupList.CupRecyclerViewAdapter;
+
 
 public class HeatViewModel extends ViewModel {
-    public JSONArray playerArray;
-    public Player[] players;
-//    public String[] playerNames;
-    public int[] playerPlacement;
-    public int[] playerScore;
+//    public ArrayList<Season> seasons = new ArrayList<>();
+    public ArrayList<Cup> cups = new ArrayList<>();
+    public ArrayList<Player> players = new ArrayList<>();
+    public Cup currentCup; // = new Cup();
+    public Race currentRace = new Race();
+    public CupRecyclerViewAdapter cupAdapter;
 }

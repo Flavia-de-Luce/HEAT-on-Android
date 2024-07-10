@@ -1,114 +1,185 @@
 package de.melchers.heat;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
+import android.provider.SyncStateContract;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.webkit.MimeTypeMap;
-import android.widget.Button;
-import android.widget.Switch;
 import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
+import de.melchers.heat.classes.Cup;
 import de.melchers.heat.classes.ExcelExporter;
 import de.melchers.heat.classes.HeatViewModel;
 import de.melchers.heat.classes.Player;
+import de.melchers.heat.classes.Race;
 import de.melchers.heat.databinding.ActivityMainBinding;
+import de.melchers.heat.ui.CupList.CupRecyclerViewAdapter;
+import de.melchers.heat.ui.dashboard.DashboardFragment;
+import de.melchers.heat.ui.home.HomeFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final String LAST_OPENED_URI_KEY = "de.melchers.heat.actionopendocument.pref.LAST_OPENED_URI_KEY";
-    private final String TAG = "MainActivity";
-
-    private final String OPEN_DOCUMENT_REQUEST_CODE = "0x33"; // Könnte alles mögliche sein, wird nur zum zuordnen der Daten gebraucht.
-    ActivityResultLauncher<String> mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-            new ActivityResultCallback<Uri>() {
-                @Override
-                public void onActivityResult(Uri uri) {
-                    // Handle the returned Uri
-                }
-            });
     private ActivityMainBinding binding;
     public HeatViewModel mViewModel;
     private ExcelExporter excelExporter;
+    private NavController navController;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // TODO: Implement ViewModel.
-        // Hoffnung: MainActivity hält das ViewModel vor und alle Fragments können sich die Daten holen die sie benötigen.
-        //           Und MainActivity kann die selben Daten bei änderungen direkt in die .xls speichern :D
-
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         this.mViewModel = new ViewModelProvider(this).get(HeatViewModel.class);
         this.excelExporter = new ExcelExporter(this);
-//        ViewModelProvider.AndroidViewModelFactory viewModelProvider = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication());
-
-
-//        mViewModel = viewModelProvider.create(HeatViewModel.class);
-//        try {
-//            mViewModel.playerArray.put(new JSONObject().put("Name", "Peter"));
-//        } catch (JSONException e) {
-//            throw new RuntimeException(e);
-//        }
-
-        //this.findViewById(R.id.navigation_dashboard);
-
-        NavController navController = NavHostFragment.findNavController(binding.navHostFragment.getFragment());
+        // NavController Setup
+        navController = NavHostFragment.findNavController(binding.appBarMainInclude.contentMainInclude.navHostFragment.getFragment());
         navController.setGraph(R.navigation.mobile_navigation);
-//        navController.navigate(R.id.addPlayer);
-//        ActivityCompat.requestPermissions(this, new String[]{
-//                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                android.Manifest.permission.READ_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
-
-
-//        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-//               R.id.navigation_add_player, R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
-//                .build();
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-//        NavigationUI.setupWithNavController(binding.navView, navController);
-
+        // Toolbar Navigation Setup
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.action_bar_open, R.string.action_bar_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        // Navigation View Setup
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener((NavigationView.OnNavigationItemSelectedListener) this);
+        // Permissions for Read and Write
         askForPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE, 11);
         askForPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, 12);
-
+        // Cup List Setup
+//        binding.appBarMainInclude.contentMainInclude.navHostFragment.findViewById(R.id.cup_recycler).setLay
+        mViewModel.cupAdapter = new CupRecyclerViewAdapter(mViewModel.cups);
+        mViewModel.cupAdapter.setOnClickListener(new CupRecyclerViewAdapter.OnClickListener() {
+            @Override
+            public void onClick(int position, Cup model) {
+                openCupFromList(position, model);
+            }
+        });
     }
 
-    private static final int PICK_PDF_FILE = 2;
+    private void openCupFromList(int position, Cup model) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("pos", position);
+        if (mViewModel.cups.contains(mViewModel.currentCup)) {
+            mViewModel.currentCup = model;
+            navController.navigate(R.id.action_cupFragment_to_cupDetailFragment, bundle);
+        } else {
+            mViewModel.cups.add(mViewModel.currentCup);
+            mViewModel.currentCup = model;
+            navController.navigate(R.id.action_cupFragment_to_cupDetailFragment, bundle);
+        }
+    }
 
-    public Player[] calculateResults(Player[] players){
-        for (Player player:players) {
-            switch(player.getLastPlacement()){
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_cup_list) {
+            // TODO: Ermittlung des aktiven Fragmentes und anschließende Navigation
+            if (mViewModel.currentCup != null) {
+                navController.navigate(R.id.cupFragment);
+                mViewModel.cupAdapter.mCups = mViewModel.cups;
+            } else {
+                Toast.makeText(this, "Bitte erst ein Spiel starten", Toast.LENGTH_LONG).show();
+            }
+        } else if (id == R.id.nav_dashboard) {
+            if (mViewModel.currentCup != null) {
+                navController.navigate(R.id.navigation_dashboard);
+            } else {
+                Toast.makeText(this, "Bitte erst ein Spiel starten", Toast.LENGTH_LONG).show();
+            }
+        } else if (id == R.id.nav_home) {
+            navController.navigate(R.id.navigation_home);
+        } else if (id == R.id.nav_cup_detail) {
+            if (mViewModel.currentCup != null) {
+                navController.navigate(R.id.cupDetailFragment);
+            } else {
+                Toast.makeText(this, "Bitte erst ein Spiel starten", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    public void addNewRace(boolean isInitial) {
+        HashMap<Player, Integer> temp2 = new HashMap<>();
+        Race race;
+        for (Player player : mViewModel.players) {
+            temp2.put(player, calculateSingleResult(player.getLastPlacement()));
+        }
+        race = mViewModel.currentRace;
+        race.setResults(temp2);
+        if (!mViewModel.currentCup.races.contains(race)) {
+            mViewModel.currentCup.races.add(race);
+        }
+
+        mViewModel.currentRace = race;
+        calculateCupTotal(mViewModel.currentCup);
+        this.saveGame();
+
+    }
+    private void calculateCupTotal(Cup cup) {
+        for (Player player : mViewModel.players) {
+            int totalScore = 0;
+            for (Race race : cup.races) {
+                totalScore += race.results.get(player);
+            }
+            cup.totalScore.put(player, totalScore);
+        }
+    }
+
+    private int calculateSingleResult(int placement) {
+        switch (placement) {
+            case 1:
+                return 9;
+            case 2:
+                return 6;
+            case 3:
+                return 4;
+            case 4:
+                return 3;
+            case 5:
+                return 2;
+            case 6:
+                return 1;
+            default:
+                Toast.makeText(this, "Fehler bei Punktberechnung", Toast.LENGTH_LONG).show();
+                return 0;
+        }
+    }
+
+    public void calculateResults(ArrayList<Player> players) {
+        for (Player player : players) {
+            switch (player.getLastPlacement()) {
                 case 1:
                     player.setTotalScore(player.getTotalScore() + 9);
                     break;
@@ -132,55 +203,20 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }
-        saveGame(players.length);
-        return players;
     }
-
-    public void saveGame(int playerCount){
-        this.excelExporter.saveGameState(playerCount);
+  
+    public void saveGame() {
+        if (!mViewModel.cups.contains(mViewModel.currentCup)) {
+            mViewModel.cups.add(mViewModel.currentCup);
+        }
+        this.excelExporter.saveGameStateNew();
     }
 
     public void loadGame(View v) {
         File pathName = new File("/storage/emulated/0/Documents/HEAT-Saves");
-        File fullPath = new File("/storage/emulated/0/Documents/HEAT-Saves/heat_save_v01.xls");
-        this.excelExporter.loadGameState("heat_save_v01.xls", pathName, fullPath);
-        Navigation.findNavController(v).navigate(R.id.navigation_dashboard);
+        File fullPath = new File("/storage/emulated/0/Documents/HEAT-Saves/heat_save_v03.xls");
+        this.excelExporter.loadGameStateNew("heat_save_v03.xls", pathName, fullPath);
     }
-
-    public void createFile(View view) { //Uri pickerInitialUri
-        ExcelExporter.export();
-//        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);//, MediaStore.Downloads.EXTERNAL_CONTENT_URI);
-//        //intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        //intent.setType("application/msexcel");
-//        intent.setDataAndType(MediaStore.Downloads.EXTERNAL_CONTENT_URI, "application/msexcel");
-//        intent.putExtra(Intent.EXTRA_TITLE, "test.xls");
-//
-//        // Optionally, specify a URI for the directory that should be opened in
-//        // the system file picker when your app creates the document.
-//        //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
-//
-//        //startActivityForResult(intent, CREATE_FILE);
-//        this.startActivity(intent);
-    }
-
-    public void openFile(View view) {
-        File sd =  new File("/storage/emulated/0/download/testExporter.xlsx");
-        ExcelExporter.importXLSX("testExporter.xlsx",sd , new File(sd.getAbsolutePath()));
-//        //Uri downloads = "/storage/emulated/0/Download";
-//        // Uri apkURI = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext(), file);
-//        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-//        //Intent intent = new Intent(Intent.ACTION_VIEW);
-//        intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        intent.setDataAndType(MediaStore.Downloads.EXTERNAL_CONTENT_URI, "application/*");
-//        //intent.setType("application/pdf");
-//
-//        // Optionally, specify a URI for the file that should appear in the
-//        // system file picker when it loads.
-//        //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
-//        this.startActivity(intent);
-//        //startActivityForResult(intent, PICK_PDF_FILE);
-    }
-    // MIME Type for Excel application/msexcel
 
     private void askForPermission(String permission, Integer requestCode) {
         if (ContextCompat.checkSelfPermission(this, permission)
@@ -205,4 +241,42 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.activity_main_drawer, menu);
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void resetModel() {
+        mViewModel.cups = new ArrayList<>();
+        mViewModel.players = new ArrayList<>();
+        mViewModel.currentCup = null;
+        mViewModel.currentRace = new Race();
+    }
 }
