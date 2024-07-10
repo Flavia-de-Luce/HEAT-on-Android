@@ -68,7 +68,7 @@ public class DashboardFragment extends Fragment {
                 Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_notifications);
             }
         });
-        view.findViewById(R.id.cancel_match_btn).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.return_to_menu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_home);

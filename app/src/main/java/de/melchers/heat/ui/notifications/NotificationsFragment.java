@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -42,32 +43,85 @@ public class NotificationsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(requireActivity()).get(HeatViewModel.class);
-        openMapNameDialog();
+        openMapNameDialog(view);
         this.createRoundResult();
 
         view.findViewById(R.id.submit_round_results_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submitGameResults(v);
+                if (validateUserInput(v, getUserInput(v))){
+                    submitGameResults(v);
+                }
             }
         });
 
         view.findViewById(R.id.cancel_round_results_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.action_navigation_notifications_to_navigation_home);
+                Navigation.findNavController(v).navigate(R.id.action_navigation_notifications_to_navigation_dashboard);
             }
         });
     }
 
+    private ArrayList<String> getUserInput(View view){
+        int playerCount = viewModel.players.size();
+        int viewId = 300;
+        ArrayList<String> userInput = new ArrayList<>();
+        EditText temp;
+        for (int i = 0; i < playerCount; i++){
+            temp = requireView().findViewById(viewId + i);
+            userInput.add(temp.getText().toString());
+        }
+        return userInput;
+    }
+
+    private boolean validateUserInput(View view, ArrayList<String> userInput){
+        int convInput;
+        int playerCount = viewModel.players.size();
+        ArrayList<Integer> availablePlacements = new ArrayList<>();
+        for (int i = 1; i <= playerCount; i++){
+            availablePlacements.add(i);
+        }
+        // More or less inputs available than expected
+        if (userInput.size() != playerCount){
+            Toast.makeText(this.getContext(), "Invalide Eingabe", Toast.LENGTH_LONG).show();
+            return false;
+        } else {
+            for (String input :
+                    userInput) {
+                if (input.isEmpty()){
+                    Toast.makeText(this.getContext(), "Eine Platzierung ist leer", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+                convInput = Integer.parseInt(input);
+                // Placement higher than the total Player count
+                if (convInput > playerCount){
+                    Toast.makeText(this.getContext(), "Eine Platzierung ist zu hoch", Toast.LENGTH_LONG).show();
+                    return false;
+                } else {
+                    // Duplicate Placement check
+                    if (availablePlacements.contains(convInput)){
+                        availablePlacements.remove((Integer) convInput);
+                        viewModel.lastUserInput.add(convInput);
+                    }else {
+                        Toast.makeText(this.getContext(), "Doppelte Platzierung nicht erlaubt", Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     private void submitGameResults(View view) {
         ArrayList<Player> players = viewModel.players;
-        int viewId = 300;
-        EditText temp;
-        for (int i = 0; i < players.size(); i++){
-            temp = requireView().findViewById(viewId + i);
-            players.get(i).setLastPlacement(Integer.parseInt(temp.getText().toString()));
+        int count = 0;
+        for (int placement :
+                viewModel.lastUserInput) {
+            players.get(count).setLastPlacement(placement);
+            count++;
         }
+        viewModel.lastUserInput.clear();
         ((MainActivity)requireActivity()).calculateResults(players);
         ((MainActivity)requireActivity()).addNewRace(false);
 
@@ -94,7 +148,7 @@ public class NotificationsFragment extends Fragment {
         }
     }
 
-    private void openMapNameDialog(){
+    private void openMapNameDialog(View view){
         final View dialogView = getLayoutInflater().inflate(R.layout.fragment_dialog, null);
         AlertDialog dialog = new AlertDialog.Builder(requireContext()).create();
         dialog.setTitle("Karten Name");
@@ -112,13 +166,13 @@ public class NotificationsFragment extends Fragment {
                     viewModel.currentRace.setId(viewModel.currentCup.races.get(viewModel.currentCup.races.size() - 1).getId() + 1);
                 }
                 viewModel.currentRace.setMapName(mapName.getText().toString());
-//                viewModel.currentMapName = mapName.getText().toString();
             }
         });
         dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Abbrechen", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                Navigation.findNavController(view).navigate(R.id.action_navigation_notifications_to_navigation_dashboard);
             }
         });
 

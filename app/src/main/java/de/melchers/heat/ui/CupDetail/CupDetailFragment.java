@@ -35,6 +35,7 @@ public class CupDetailFragment extends Fragment {
     private FragmentCupDetailBinding binding;
     private HeatViewModel viewModel;
     private int cupNumber;
+    private boolean isCurrentCup;
 
     public CupDetailFragment() {
         // Required empty public constructor
@@ -50,6 +51,9 @@ public class CupDetailFragment extends Fragment {
         if (getArguments() != null) {
             Bundle bundle = getArguments();
             this.cupNumber = bundle.getInt("pos");
+            this.isCurrentCup = false;
+        } else {
+            this.isCurrentCup = true;
         }
     }
 
@@ -64,13 +68,15 @@ public class CupDetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(requireActivity()).get(HeatViewModel.class);
+        if (this.isCurrentCup){
+            this.cupNumber = viewModel.cups.size() - 1;
+        }
         createTableFromTemplate();
     }
 
     @SuppressLint({"SetTextI18n", "ResourceType"})
     private void createTableFromTemplate() {
-        // Vielleicht geht auch direkt die player anzahl...
-        int cols = viewModel.currentCup.totalScore.size() + 1;
+        int cols = viewModel.players.size() + 1;
         // +2 wegen Kopf und Fußzeile
         int rows = viewModel.currentCup.races.size();
         TableLayout tableLayout = requireView().findViewById(R.id.cup_detail_table);
