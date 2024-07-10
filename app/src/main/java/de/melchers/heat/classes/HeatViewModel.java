@@ -17,4 +17,5 @@ public class HeatViewModel extends ViewModel {
     public Cup currentCup; // = new Cup();
     public Race currentRace = new Race();
     public CupRecyclerViewAdapter cupAdapter;
+    public ArrayList<Integer> lastUserInput = new ArrayList<>();
 }
