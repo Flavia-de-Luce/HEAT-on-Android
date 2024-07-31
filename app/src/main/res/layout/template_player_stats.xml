@@ -2,107 +2,116 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
-    android:layout_height="175dp">
+    android:layout_height="152dp">
 
 
     <ImageView
         android:id="@+id/playerPicture"
-        android:tag="picture"
         android:layout_width="139dp"
         android:layout_height="131dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
+        android:src="@drawable/shygirl"
 
-        android:src="@drawable/shygirl" />
+        android:tag="picture" />
 
     <TextView
         android:id="@+id/playerName"
-        android:tag="name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_marginStart="175dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="152dp"
+        android:tag="name"
         android:text="TextView"
+        android:textAlignment="viewStart"
         android:textSize="20sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/lblNumOfFirstPlace"
-        android:tag="lblFirstPlace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="106dp"
         android:layout_marginEnd="181dp"
+        android:tag="lblFirstPlace"
         android:text="@string/numOfFirstPlace"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/txtNumOfFirstPlace"
-        android:tag="inpFirstPlace"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="131dp"
-        android:layout_marginEnd="177dp"
-        android:text="TextView" />
+        android:layout_marginEnd="181dp"
+        android:tag="inpFirstPlace"
+        android:text="TextView"
+        android:textAlignment="textEnd" />
 
     <TextView
         android:id="@+id/lblTotalPoints"
-        android:tag="lblTotalPoints"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginStart="275dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="35dp"
         android:layout_marginEnd="36dp"
         android:layout_marginBottom="286dp"
+        android:tag="lblTotalPoints"
         android:text="@string/total_points"
+        android:textAlignment="viewEnd"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/txtTotalPoints"
-        android:tag="inpTotalPoints"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="296dp"
-        android:layout_marginTop="64dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="317dp"
+        android:layout_marginTop="59dp"
+        android:layout_marginEnd="36dp"
         android:layout_marginBottom="68dp"
-        android:text="TextView" />
+        android:tag="inpTotalPoints"
+        android:text="TextView"
+        android:textAlignment="viewEnd" />
 
     <TextView
         android:id="@+id/lblNumOfRoundsPlayed"
-        android:tag="lblRoundsPlayed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="104dp"
-        android:layout_marginEnd="55dp"
+        android:layout_marginTop="107dp"
+        android:layout_marginEnd="36dp"
+        android:tag="lblRoundsPlayed"
         android:text="@string/num_of_rounds_played"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/txtNumOfRoundsPlayed"
-        android:tag="inpRoundsPlayed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="130dp"
-        android:layout_marginEnd="57dp"
-        android:text="TextView" />
+        android:layout_marginTop="131dp"
+        android:layout_marginEnd="36dp"
+        android:tag="inpRoundsPlayed"
+        android:text="TextView"
+        android:textAlignment="textEnd" />
 
     <TextView
         android:id="@+id/lblBestMap"
-        android:tag="lblBestMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -113,13 +122,13 @@
         android:layout_marginTop="148dp"
         android:layout_marginEnd="187dp"
         android:layout_marginBottom="198dp"
+        android:tag="lblBestMap"
         android:text="@string/best_map"
         android:textStyle="bold"
         android:visibility="gone" />
 
     <TextView
         android:id="@+id/txtBestMap"
-        android:tag="inpBestMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -130,31 +139,32 @@
         android:layout_marginTop="177dp"
         android:layout_marginEnd="196dp"
         android:layout_marginBottom="169dp"
+        android:tag="inpBestMap"
         android:text="TextView"
         android:visibility="gone" />
 
     <TextView
         android:id="@+id/lblPlayerColor"
-        android:tag="lblColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="79dp"
         android:layout_marginEnd="48dp"
+        android:tag="lblColor"
         android:text="@string/player_color"
         android:textStyle="bold"
         android:visibility="gone" />
 
     <TextView
         android:id="@+id/txtPlayerColor"
-        android:tag="inpColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="130dp"
         android:layout_marginEnd="49dp"
+        android:tag="inpColor"
         android:text="TextView"
         android:visibility="gone" />
 

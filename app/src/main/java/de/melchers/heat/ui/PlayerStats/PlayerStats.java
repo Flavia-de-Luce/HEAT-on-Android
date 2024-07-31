@@ -28,12 +28,6 @@ public class PlayerStats extends Fragment {
     private FragmentPlayerStatsBinding binding;
     private HeatViewModel viewModel;
     private LinearLayout scrollViewChild;
-    private TextView numOfFirstPlace;
-    private TextView totalPoints;
-    private TextView numOfRounds;
-    //private  TextView bestTrack;
-    private TextView playerColor;
-
 
     public PlayerStats() {
         // Empty constructor required
@@ -59,8 +53,7 @@ public class PlayerStats extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentPlayerStatsBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        return root;
+        return binding.getRoot();
     }
 
     @Override
@@ -77,7 +70,7 @@ public class PlayerStats extends Fragment {
         int count = 0;
         for (Player player :
                 viewModel.players) {
-            tempLayout = LayoutInflater.from(requireActivity()).inflate(R.layout.template_player_stats, null);
+            tempLayout = LayoutInflater.from(requireActivity()).inflate(R.layout.template_player_stats, scrollViewChild, false);
             tempText = tempLayout.findViewWithTag("name");
             tempText.setText(player.getName());
 
@@ -96,16 +89,9 @@ public class PlayerStats extends Fragment {
             count++;
         }
         for (int i = 0; i < playerCards.length; i++) {
-            // TODO: Spacing is too large
             this.scrollViewChild.addView(playerCards[i]);
+            // Small Margin at the Bottom
+            LayoutInflater.from(requireActivity()).inflate(R.layout.template_placeholder, scrollViewChild);
         }
-//        this.playerName.setText(player.getName());
-//        this.numOfFirstPlace.setText(player.allPlacements.get(1));
-//        this.totalPoints.setText(player.getTotalScore());
-//        this.numOfRounds.setText(player.getTotalRounds());
-//        //this.bestTrack.setText(player.bestMap);
-//        this.playerColor.setText(player.color);
-
-
     }
 }
