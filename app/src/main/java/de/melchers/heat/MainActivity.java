@@ -1,6 +1,8 @@
 package de.melchers.heat;
 
+import android.app.Dialog;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.SyncStateContract;
 import android.view.Menu;
@@ -38,6 +40,8 @@ import de.melchers.heat.classes.HeatViewModel;
 import de.melchers.heat.classes.Player;
 import de.melchers.heat.classes.Race;
 import de.melchers.heat.databinding.ActivityMainBinding;
+import de.melchers.heat.ui.ColorList.ColorListDialogFragment;
+import de.melchers.heat.ui.ColorList.ColorRecyclerViewAdapter;
 import de.melchers.heat.ui.CupList.CupRecyclerViewAdapter;
 import de.melchers.heat.ui.dashboard.DashboardFragment;
 import de.melchers.heat.ui.home.HomeFragment;
@@ -83,18 +87,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 openCupFromList(position, model);
             }
         });
+
+        // Color List Setup
+        mViewModel.colorAdapter = new ColorRecyclerViewAdapter();
+        //mViewModel.colorFragment = ColorListDialogFragment.newInstance(6);
+
+
+        mViewModel.colorAdapter.setOnClickListener(new ColorRecyclerViewAdapter.OnClickListener() {
+            @Override
+            public void onClick(int position, String color) {
+                chooseColor(color);
+            }
+       });
     }
 
     private void openCupFromList(int position, Cup model) {
         Bundle bundle = new Bundle();
         bundle.putInt("pos", position);
-        if (mViewModel.cups.contains(mViewModel.currentCup)) {
-            mViewModel.currentCup = model;
-            navController.navigate(R.id.action_cupFragment_to_cupDetailFragment, bundle);
-        } else {
+        if (!mViewModel.cups.contains(mViewModel.currentCup)) {
             mViewModel.cups.add(mViewModel.currentCup);
-            mViewModel.currentCup = model;
-            navController.navigate(R.id.action_cupFragment_to_cupDetailFragment, bundle);
+        }
+        mViewModel.currentCup = model;
+        navController.navigate(R.id.action_cupFragment_to_cupDetailFragment, bundle);
+    }
+
+    private void chooseColor(String color){
+        Bundle bundle = new Bundle();
+        bundle.putString("color", color);
+        ColorListDialogFragment dialog = (ColorListDialogFragment) this.getSupportFragmentManager().findFragmentByTag("dialog");
+        if (dialog != null) {
+            dialog.dismiss();
         }
     }
 
@@ -120,6 +142,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_cup_detail) {
             if (mViewModel.currentCup != null) {
                 navController.navigate(R.id.cupDetailFragment);
+            } else {
+                Toast.makeText(this, "Bitte erst ein Spiel starten", Toast.LENGTH_LONG).show();
+            }
+        } else if (id == R.id.nav_player_detail){
+            if (mViewModel.currentCup != null){
+                navController.navigate(R.id.playerStats);
             } else {
                 Toast.makeText(this, "Bitte erst ein Spiel starten", Toast.LENGTH_LONG).show();
             }

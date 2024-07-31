@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 
 import de.melchers.heat.R;
+import de.melchers.heat.ui.ColorList.ColorListDialogFragment;
+import de.melchers.heat.ui.ColorList.ColorRecyclerViewAdapter;
 import de.melchers.heat.ui.CupList.CupRecyclerViewAdapter;
 
 
@@ -17,5 +19,8 @@ public class HeatViewModel extends ViewModel {
     public Cup currentCup; // = new Cup();
     public Race currentRace = new Race();
     public CupRecyclerViewAdapter cupAdapter;
+    //public ColorListDialogFragment colorFragment;
+    public ColorRecyclerViewAdapter colorAdapter;
+    //public ColorListDialogFragment.ColorAdapter colorAdapter;
     public ArrayList<Integer> lastUserInput = new ArrayList<>();
 }

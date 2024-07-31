@@ -35,6 +35,9 @@
         <action
             android:id="@+id/action_navigation_dashboard_to_cupFragment"
             app:destination="@id/cupFragment" />
+        <action
+            android:id="@+id/action_navigation_dashboard_to_playerStats"
+            app:destination="@id/playerStats" />
     </fragment>
 
     <fragment
@@ -73,6 +76,9 @@
         <action
             android:id="@+id/action_cupFragment_to_cupDetailFragment"
             app:destination="@id/cupDetailFragment" />
+        <action
+            android:id="@+id/action_cupFragment_to_playerStats"
+            app:destination="@id/playerStats" />
     </fragment>
     <fragment
         android:id="@+id/cupDetailFragment"
@@ -86,6 +92,27 @@
             app:destination="@id/navigation_dashboard" />
         <action
             android:id="@+id/action_cupDetailFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_cupDetailFragment_to_playerStats"
+            app:destination="@id/playerStats" />
+    </fragment>
+    <fragment
+        android:id="@+id/playerStats"
+        android:name="de.melchers.heat.ui.PlayerStats.PlayerStats"
+        android:label="fragment_player_stats"
+        tools:layout="@layout/fragment_player_stats" >
+        <action
+            android:id="@+id/action_playerStats_to_navigation_home"
+            app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_playerStats_to_cupFragment"
+            app:destination="@id/cupFragment" />
+        <action
+            android:id="@+id/action_playerStats_to_navigation_dashboard"
+            app:destination="@id/navigation_dashboard" />
+        <action
+            android:id="@+id/action_playerStats_to_navigation_home2"
             app:destination="@id/navigation_home" />
     </fragment>
 </navigation>

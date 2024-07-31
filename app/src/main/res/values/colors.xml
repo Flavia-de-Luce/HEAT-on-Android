@@ -9,4 +9,12 @@
     <color name="white">#FFFFFFFF</color>
     <color name="menu_bar">#CD2DD3</color>
     <color name="warm_red">#E83305</color>
+
+    <!--Color List Colors-->
+    <color name="silver">#CCCCCC</color>
+    <color name="red">#ED0B0B</color>
+    <color name="yellow">#FAE310</color>
+    <color name="green">#7EDF1C</color>
+    <color name="blue">#1A6EED</color>
+    <color name="list_black">#000000</color>
 </resources>

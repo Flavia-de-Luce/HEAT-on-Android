@@ -1,7 +1,6 @@
 package de.melchers.heat.ui.GameSetup;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.Dialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,19 +18,13 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 
-import de.melchers.heat.MainActivity;
+import de.melchers.heat.ui.ColorList.ColorListDialogFragment;
 import de.melchers.heat.R;
-import de.melchers.heat.classes.Cup;
 import de.melchers.heat.classes.HeatViewModel;
 import de.melchers.heat.classes.Player;
-import de.melchers.heat.classes.Race;
-import de.melchers.heat.classes.Season;
+import de.melchers.heat.ui.ColorList.ColorRecyclerViewAdapter;
 
 public class GameSetup extends Fragment {
     private int playerCount = 1;
@@ -90,6 +83,17 @@ public class GameSetup extends Fragment {
                 player.allPlacements.put(i, 0);
             }
         }
+        ColorListDialogFragment dialog;
+        dialog = ColorListDialogFragment.newInstance(6);
+        dialog.show(requireActivity().getSupportFragmentManager(), "dialog");
+        //ColorListDialogFragment.newInstance(6).show(requireActivity().getSupportFragmentManager(), "dialog");
+
+
+
+        // Dialog().show(supportFragmentManager, "Dialog title?");
+//        Dialog dialog = new Dialog();
+//        dialog.show(requireActivity().getSupportFragmentManager(), "map_dialog");
+//        openDialog();
 
         Navigation.findNavController(requireView()).navigate(R.id.action_navigation_game_setup_to_navigation_dashboard);
     }

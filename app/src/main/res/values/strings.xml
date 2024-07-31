@@ -31,10 +31,20 @@
     <!--    Dialog Fragment-->
     <string name="hint_map_name">Rennstrecken Name</string>
     <string name="lbl_map_name">Name der Strecke</string>
+
     <!--   ActionBarDrawerToggle-->
     <string name="action_bar_open">Open</string>
     <string name="action_bar_close">Close</string>
+
     <!--   Cup Detail Fragment -->
     <string name="cup_tHeadRace">Rennen</string>
+
+    <!--   Player Stats Fragment -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="numOfFirstPlace"># Erster</string>
+    <string name="total_points">Gesamtpunkte</string>
+    <string name="num_of_rounds_played"># Runden</string>
+    <string name="best_map">Beste Strecke</string>
+    <string name="player_color">Spielerfarbe</string>
 
 </resources>

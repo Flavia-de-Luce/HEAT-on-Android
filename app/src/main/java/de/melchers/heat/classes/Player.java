@@ -10,6 +10,9 @@ public class Player {
     private String name;
     private int seasons;
     public HashMap<Integer, Integer> allPlacements = new HashMap<>();
+    public String color;
+    private int totalRounds;
+    public String bestMap;
 
     public Player(String name){
         this.name = name;
@@ -46,5 +49,13 @@ public class Player {
 
     public void setSeasons(int seasons) {
         this.seasons = seasons;
+    }
+
+    public int getTotalRounds() {
+        return totalRounds;
+    }
+
+    public void setTotalRounds(int totalRounds) {
+        this.totalRounds = totalRounds;
     }
 }

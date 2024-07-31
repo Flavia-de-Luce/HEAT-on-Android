@@ -38,6 +38,8 @@ public class DashboardFragment extends Fragment {
         return root;
     }
 
+
+
     @SuppressLint("SetTextI18n")
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -45,8 +47,16 @@ public class DashboardFragment extends Fragment {
         if (viewModel.cups.size() == 0) {
             binding.enterMatchBtn.setVisibility(View.INVISIBLE);
         }
+        // Sets all Click-Listener for the Buttons
+        setButtonListeners(view);
+
         TextView roundCount = view.findViewById(R.id.roundCount);
         TextView cupCount = view.findViewById(R.id.cupCount);
+
+        // After Game initialisation
+        if (viewModel.currentCup == null){
+            view.findViewById(R.id.add_cup_btn).performClick();
+        }
         roundCount.setText(String.valueOf(viewModel.currentCup.races.size()));
         cupCount.setText(String.valueOf(viewModel.cups.size()));
         JSONArray playerArray = new JSONArray();
@@ -62,42 +72,6 @@ public class DashboardFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        view.findViewById(R.id.enter_match_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_notifications);
-            }
-        });
-        view.findViewById(R.id.return_to_menu).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_home);
-            }
-        });
-
-        view.findViewById(R.id.add_cup_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (viewModel.cups.size() == 0 && viewModel.currentCup == null) {
-                    viewModel.currentCup = new Cup();
-                    viewModel.currentCup.id = 1;
-                    viewModel.cups.add(viewModel.currentCup);
-                    binding.enterMatchBtn.setVisibility(View.VISIBLE);
-                    Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_notifications);
-                } else {
-                    if (viewModel.cups.contains(viewModel.currentCup)){
-
-                        viewModel.cups.set(viewModel.cups.indexOf(viewModel.currentCup), viewModel.currentCup);
-                    } else {
-                        viewModel.cups.add(viewModel.currentCup);
-                    }
-                    viewModel.currentCup = new Cup();
-                    viewModel.currentCup.id = viewModel.cups.size() + 1;
-                    Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_notifications);
-                }
-            }
-        });
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -157,6 +131,45 @@ public class DashboardFragment extends Fragment {
                     TableLayout.LayoutParams.MATCH_PARENT,
                     TableLayout.LayoutParams.WRAP_CONTENT));
         }
+    }
+
+    private void setButtonListeners(@NonNull View view){
+        view.findViewById(R.id.add_cup_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (viewModel.cups.size() == 0 && viewModel.currentCup == null) {
+                    viewModel.currentCup = new Cup();
+                    viewModel.currentCup.id = 1;
+                    viewModel.cups.add(viewModel.currentCup);
+                    binding.enterMatchBtn.setVisibility(View.VISIBLE);
+                    Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_notifications);
+                } else {
+                    if (viewModel.cups.contains(viewModel.currentCup)){
+
+                        viewModel.cups.set(viewModel.cups.indexOf(viewModel.currentCup), viewModel.currentCup);
+                    } else {
+                        viewModel.cups.add(viewModel.currentCup);
+                    }
+                    viewModel.currentCup = new Cup();
+                    viewModel.currentCup.id = viewModel.cups.size() + 1;
+                    Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_notifications);
+                }
+            }
+        });
+
+        view.findViewById(R.id.enter_match_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_notifications);
+            }
+        });
+
+        view.findViewById(R.id.return_to_menu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.action_navigation_dashboard_to_navigation_home);
+            }
+        });
     }
 
     @Override
